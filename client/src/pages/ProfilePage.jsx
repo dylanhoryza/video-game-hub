@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import SearchBar from '../components/SearchBar';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPlaystation, faXbox, faWindows } from '@fortawesome/free-brands-svg-icons';
+
 
 // Profile page function
 const ProfilePage = () => {
@@ -53,6 +56,45 @@ const ProfilePage = () => {
     return platformStr;
   }
 
+  const getPlatformIcons = (platforms) => {
+    return platforms.map((platform, index) => {
+      let icon = null;
+      switch (platform.platform.name) {
+        case 'PlayStation':
+          icon = <FontAwesomeIcon icon={faPlaystation} />;
+          break;
+        case 'Xbox':
+          icon = <FontAwesomeIcon icon={faXbox} />;
+          break;
+        case 'PC':
+          icon = <FontAwesomeIcon icon={faWindows} />;
+          break;
+        // case 'Nintendo': 
+        // icon = <FontAwesomeIcon icon={faGamepad} />;
+        //   break;
+        // case 'iOS': 
+        // icon = <FontAwesomeIcon icon={faApple} />;
+        // break;
+        default:
+          icon = null;
+      }
+      return <span key={index}>{icon}</span>;
+    });
+  };
+  
+  const handleAddToWishlist = (gameId) => {
+    // Add logic to handle adding to wishlist
+    console.log(`Added to Wishlist: ${gameId}`);
+  };
+
+  const handleAddToCurrentlyPlaying = (gameId) => {
+    // Add logic to handle adding to currently playing
+    console.log(`Added to Currently Playing: ${gameId}`);
+  };
+  
+  
+  
+
   return (
     <div className='container'>
       <header className='my-4'>
@@ -98,8 +140,11 @@ const ProfilePage = () => {
                   style={{ width: '100%', height: 'auto' }}
                 />
                 <h3>{game.name}</h3>
-                <p>{game.rating}</p>
-                <p>{getPlatformStr(game.parent_platforms)}</p>
+                <p>{getPlatformIcons(game.parent_platforms)}</p>
+                <p> Rating: {game.rating}</p>
+                <p>Released: {game.released}</p>
+                <button onClick={() => handleAddToWishlist(game.id)}>Add to Wishlist</button>
+                <button onClick={() => handleAddToCurrentlyPlaying(game.id)}>Currently Playing</button>
               </div>
             </div>
           ))}
