@@ -39,12 +39,7 @@ const ProfilePage = () => {
     } catch (error) {
       console.error('Error searching game', error);
     };
-
-
-
-
   }
-
 
   return (
     <div className='container'>
