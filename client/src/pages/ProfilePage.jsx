@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import SearchBar from '../components/SearchBar';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlaystation, faXbox, faWindows } from '@fortawesome/free-brands-svg-icons';
+import { Link } from 'react-router-dom';
+
 
 
 // Profile page function
@@ -129,6 +131,7 @@ const ProfilePage = () => {
         />
         <button onClick={handleGameSearch}>Search</button>
       </div>
+      <Link to='/blog'>Forums</Link>
       <div className='container'>
         <div className='row'>
           {searchResults.map((game) => (
