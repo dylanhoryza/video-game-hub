@@ -10,7 +10,7 @@ export const CREATE_USER = gql`
       favoriteGames
     }
   }
-`;
+`; 
 
 export const LOGIN_USER = gql`
   mutation LoginUser($email: String!, $password: String!) {

@@ -24,5 +24,5 @@ type Mutation {
     saveFavoriteGame(gameName: String!): User
 }
 
-`
+` 
 module.exports = typeDefs

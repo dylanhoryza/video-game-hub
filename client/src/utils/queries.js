@@ -7,7 +7,7 @@ export const GET_USER_BY_ID = gql`
       username
       email
       bio
-      favoriteGames
+      favoriteGames 
     }
   }
 `;
