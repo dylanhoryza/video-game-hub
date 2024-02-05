@@ -4,6 +4,8 @@ import './App.css'
 import { ApolloClient, InMemoryCache, ApolloProvider, createHttpLink, HttpLink } from '@apollo/client'
 import { setContext } from '@apollo/client/link/context' 
 import 'bootstrap/dist/css/bootstrap.min.css';
+import HomePage from './pages/HomePage'
+
 
 const httpLink = createHttpLink({ uri: '/graphql' })
 const authLink = setContext((_, { headers }) => {
@@ -26,8 +28,7 @@ function App() {
     <ApolloProvider client = { client }>
     <div className='app-wrapper'>
       <div className='app-container'>
-      <Outlet />
-
+    <HomePage />
       </div>
       
     </div>

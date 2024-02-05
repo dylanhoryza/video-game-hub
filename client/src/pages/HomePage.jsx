@@ -2,10 +2,17 @@ import React, { useState, useEffect } from 'react';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
-import './home.css'
+import './home.css';
+import Login from './Login'; 
+
+// Define the Backdrop component
+const Backdrop = ({ onClick }) => {
+  return <div className="backdrop" onClick={onClick}></div>;
+};
 
 const HomePage = () => {
   const [games, setGames] = useState([]);
+  const [showLogin, setShowLogin] = useState(false); // State to manage login modal visibility
 
   useEffect(() => {
     const getAllGames = async () => {
@@ -30,16 +37,26 @@ const HomePage = () => {
   const settings = {
     dots: true,
     infinite: true,
-    speed: 1000, // Rotate every 8 seconds
+    speed: 1000, 
     slidesToShow: 1,
     slidesToScroll: 1,
     autoplay: true,
-    autoplaySpeed: 5000, // Set to the same value as speed
+    autoplaySpeed: 5000, 
     pauseOnHover: true,
   };
 
+  // Event handler to show the login modal
+  const handleShowLogin = () => {
+    setShowLogin(true);
+  };
+
+  // Event handler to hide the login modal
+  const handleCloseLogin = () => {
+    setShowLogin(false);
+  };
+
   return (
-<div className="carousel-container">
+    <div className="carousel-container">
       <div className="carousel-wrapper">
         <Slider {...settings}>
           {games.map((game) => (
@@ -49,6 +66,21 @@ const HomePage = () => {
           ))}
         </Slider>
       </div>
+
+      {/* Conditionally render the login modal and the backdrop */}
+      {showLogin && (
+        <>
+          <Backdrop onClick={handleCloseLogin} />
+          <div className="login-overlay">
+            <div className="login-modal">
+              <Login onClose={handleCloseLogin} />
+            </div>
+          </div>
+        </>
+      )}
+
+      {/* Button to open the login modal */}
+      <button className="login-button" onClick={handleShowLogin}>Login</button>
     </div>
   );
 };
