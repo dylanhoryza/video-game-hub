@@ -4,7 +4,10 @@ type User {
     _id: ID!
     username: String!
     email: String!
-}
+    bio: String
+    favoriteGames: [String]
+
+  }
 
 type Auth {
     token: ID! 
@@ -16,7 +19,9 @@ type Query {
 }
 
 type Mutation {
-    addUser(username: String!, email: String!, password: String!):Auth
+    createUser(username: String!, email: String!, password: String!, bio: String, favoriteGames: [String]): User
+    loginUser(email: String!, password: String!): Auth
+    saveFavoriteGame(gameName: String!): User
 }
 
 `
