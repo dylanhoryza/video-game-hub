@@ -1,13 +1,14 @@
-
 import { useState } from 'react';
 import { useMutation } from '@apollo/client';
-import { LOGIN_USER } from '../utils/mutations';
+import { ADD_USER } from '../utils/mutations';
 import Auth from '../utils/auth';
-import './login.css';
 
-const Login = () => {
-  const [formState, setFormState] = useState({ email: '', password: '' });
-  const [login, { error }] = useMutation(LOGIN_USER);
+import './signup.css';
+
+
+const SignUp = ({ onClose }) => {
+  const [formState, setFormState] = useState({ username: '', email: '', password: '' });
+  const [addUser, { error, data }] = useMutation(ADD_USER);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -22,15 +23,16 @@ const Login = () => {
     event.preventDefault();
 
     try {
-      const { data } = await login({
+      const { data } = await addUser({
         variables: { ...formState },
       });
 
-      Auth.login(data.login.token);
-//redirect to anothe rpage after login
-window.location.assign('/profile');
+      Auth.login(data.addUser.token);
+
+      // After successful sign up, close modal
+      onClose();
     } catch (error) {
-      console.error('Error logging in:', error.message);
+      console.error('Error signing up:', error.message);
     }
   };
 
@@ -38,9 +40,17 @@ window.location.assign('/profile');
     <main className="flex-row justify-center mb-4">
       <div className="col-12 col-lg-10">
         <div className="card">
-          <h4 className="card-header bg-dark text-light p-2">Login</h4>
+          <h4 className="card-header bg-dark text-light p-2">Sign Up</h4>
           <div className="card-body">
             <form onSubmit={handleFormSubmit}>
+              <input
+                className="form-input"
+                placeholder="Username"
+                name="username"
+                type="text"
+                value={formState.username}
+                onChange={handleChange}
+              />
               <input
                 className="form-input"
                 placeholder="Your email"
@@ -76,4 +86,4 @@ window.location.assign('/profile');
   );
 };
 
-export default Login;
+export default SignUp;

@@ -1,0 +1,10 @@
+
+
+/* Style for the sign-up button */
+.signup-button {
+    position: absolute;
+    top: 20px; 
+    left: 20px; 
+    z-index: 1000; 
+  }
+  

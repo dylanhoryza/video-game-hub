@@ -3,9 +3,10 @@ import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import './home.css';
-import Login from './Login'; 
+import Login from './Login';
+import SignUp from './SignUp';
 
-// Define the Backdrop component
+// Backdrop component for modals
 const Backdrop = ({ onClick }) => {
   return <div className="backdrop" onClick={onClick}></div>;
 };
@@ -13,6 +14,7 @@ const Backdrop = ({ onClick }) => {
 const HomePage = () => {
   const [games, setGames] = useState([]);
   const [showLogin, setShowLogin] = useState(false); // State to manage login modal visibility
+  const [showSignUp, setShowSignUp] = useState(false); // State to manage sign-up modal visibility
 
   useEffect(() => {
     const getAllGames = async () => {
@@ -37,22 +39,31 @@ const HomePage = () => {
   const settings = {
     dots: true,
     infinite: true,
-    speed: 1000, 
+    speed: 1000,
     slidesToShow: 1,
     slidesToScroll: 1,
     autoplay: true,
-    autoplaySpeed: 5000, 
+    autoplaySpeed: 5000,
     pauseOnHover: true,
   };
 
-  // Event handler to show the login modal
+  // Event handler to show  modals
   const handleShowLogin = () => {
     setShowLogin(true);
   };
 
-  // Event handler to hide the login modal
   const handleCloseLogin = () => {
     setShowLogin(false);
+  };
+
+  
+  const handleShowSignUp = () => {
+    setShowSignUp(true);
+  };
+
+ 
+  const handleCloseSignUp = () => {
+    setShowSignUp(false);
   };
 
   return (
@@ -67,7 +78,6 @@ const HomePage = () => {
         </Slider>
       </div>
 
-      {/* Conditionally render the login modal and the backdrop */}
       {showLogin && (
         <>
           <Backdrop onClick={handleCloseLogin} />
@@ -79,8 +89,25 @@ const HomePage = () => {
         </>
       )}
 
-      {/* Button to open the login modal */}
-      <button className="login-button" onClick={handleShowLogin}>Login</button>
+
+      {showSignUp && (
+        <>
+          <Backdrop onClick={handleCloseSignUp} />
+          <div className="signup-overlay">
+            <div className="signup-modal">
+              <SignUp onClose={handleCloseSignUp} />
+            </div>
+          </div>
+        </>
+      )}
+
+
+      <button className="login-button" onClick={handleShowLogin}>
+        Login
+      </button>
+      <button className="signup-button" onClick={handleShowSignUp}>
+        Sign Up
+      </button>
     </div>
   );
 };
