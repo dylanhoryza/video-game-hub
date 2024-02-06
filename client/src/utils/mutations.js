@@ -26,14 +26,30 @@ mutation Login($email: String!, $password: String!) {
 }
 `;
 
-export const SAVE_FAVORITE_GAME = gql`
-  mutation SaveFavoriteGame($userId: ID!, $gameName: String!) {
-    saveFavoriteGame(userId: $userId, gameName: $gameName) {
+export const ADD_TO_WISHLIST = gql`
+  mutation AddToWishlist($gameId: ID!) {
+    addToWishlist(input: { gameId: $gameId }) {
       _id
-      username
-      email
-      bio
-      favoriteGames
+      name
+      image
+      platforms
+      rating
+      releaseDate
+      
+    }
+  }
+`;
+
+export const ADD_TO_CURRENTLY_PLAYING = gql`
+  mutation AddToCurrentlyPlaying($gameId: ID!) {
+    addToCurrentlyPlaying(input: { gameId: $gameId }) {
+      _id
+      name
+      image
+      platforms
+      rating
+      releaseDate
+      
     }
   }
 `;

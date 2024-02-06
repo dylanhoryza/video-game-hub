@@ -3,6 +3,9 @@ import SearchBar from '../components/SearchBar';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlaystation, faXbox, faWindows } from '@fortawesome/free-brands-svg-icons';
 import { Link } from 'react-router-dom';
+import { ADD_TO_WISHLIST } from '../utils/mutations';
+import { ADD_TO_CURRENTLY_PLAYING } from '../utils/mutations';
+import { useMutation } from '@apollo/client';
 
 
 
@@ -10,6 +13,8 @@ import { Link } from 'react-router-dom';
 const ProfilePage = () => {
   const [searchGames, setSearchedGames] = useState('');
   const [searchResults, setSearchResults] = useState([]);
+  const [wishlist, setWishlist] = useState([]); 
+  const [currentlyPlaying, setCurrentlyPlaying] = useState([]);
 
   // API call for all games
   useEffect(() => {
@@ -58,6 +63,7 @@ const ProfilePage = () => {
     return platformStr;
   }
 
+  // Function to turn platform names into images
   const getPlatformIcons = (platforms) => {
     return platforms.map((platform, index) => {
       let icon = null;
@@ -71,27 +77,40 @@ const ProfilePage = () => {
         case 'PC':
           icon = <FontAwesomeIcon icon={faWindows} />;
           break;
-        // case 'Nintendo': 
-        // icon = <FontAwesomeIcon icon={faGamepad} />;
-        //   break;
-        // case 'iOS': 
-        // icon = <FontAwesomeIcon icon={faApple} />;
-        // break;
         default:
           icon = null;
       }
       return <span key={index}>{icon}</span>;
     });
   };
+
+  // const handleAddToWishlist = (gameId) => {
+  //   const selectedGame = searchResults.find((game) => game.id === gameId);
+  //   if (selectedGame) {
+  //     setWishlist([...wishlist, selectedGame]);
+  //   }
+  // };
+
+  const [addToWishlist] = useMutation(ADD_TO_WISHLIST);
   
-  const handleAddToWishlist = (gameId) => {
-    // Add logic to handle adding to wishlist
-    console.log(`Added to Wishlist: ${gameId}`);
+  const handleAddToWishlist = async (gameId) => {
+    try {
+      const { data } = await addToWishlist({ variables: { gameId } });
+      setWishlist([...wishlist, data.addToWishlist]);
+    } catch (error) {
+      console.error('Error adding to wishlist:', error);
+    }
   };
 
-  const handleAddToCurrentlyPlaying = (gameId) => {
-    // Add logic to handle adding to currently playing
-    console.log(`Added to Currently Playing: ${gameId}`);
+  const [addToCurrentlyPlaying] = useMutation(ADD_TO_CURRENTLY_PLAYING);
+
+  const handleAddToCurrentlyPlaying = async (gameId) => {
+    try {
+      const { data } = await addToCurrentlyPlaying({ variables: { gameId } });
+      setCurrentlyPlaying([...currentlyPlaying, data.addToCurrentlyPlaying]);
+    } catch (error) {
+      console.error('Error adding to currently playing:', error);
+    }
   };
   
   
@@ -114,12 +133,53 @@ const ProfilePage = () => {
         </div>
         <div className='col-md-8'>
           <h2>Currently Playing:</h2>
-          <p>Game Title</p>
+          <div className='container'>
+        <div className='row'>
+          {currentlyPlaying.map((game) => (
+            <div className='col-lg-3 col-md-6 col-sm-12' key={game.id}>
+              <div className='item'>
+                <img
+                  src={game.background_image}
+                  alt={game.name}
+                  style={{ width: '100%', height: 'auto' }}
+                />
+                <h3>{game.name}</h3>
+                <p>{getPlatformIcons(game.parent_platforms)}</p>
+                <p> Rating: {game.rating}</p>
+                <p>Released: {game.released}</p>
+                <button onClick={() => handleAddToWishlist(game.id)}>Add to Wishlist</button>
+                <button onClick={() => handleAddToCurrentlyPlaying(game.id)}>Currently Playing</button>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
         </div>
       </div>
 
       <section className='my-4'>
         <h2>Wishlist</h2>
+        <div className='container'>
+        <div className='row'>
+          {wishlist.map((game) => (
+            <div className='col-lg-3 col-md-6 col-sm-12' key={game.id}>
+              <div className='item'>
+                <img
+                  src={game.background_image}
+                  alt={game.name}
+                  style={{ width: '100%', height: 'auto' }}
+                />
+                <h3>{game.name}</h3>
+                <p>{getPlatformIcons(game.parent_platforms)}</p>
+                <p> Rating: {game.rating}</p>
+                <p>Released: {game.released}</p>
+                <button onClick={() => handleAddToWishlist(game.id)}>Add to Wishlist</button>
+                <button onClick={() => handleAddToCurrentlyPlaying(game.id)}>Currently Playing</button>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
       </section>
       {/* Search Bar */}
       <div className='input-group mb-3'>

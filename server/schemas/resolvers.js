@@ -1,6 +1,9 @@
 const { User } = require('../models');
 const { Game } = require('../models');
 const { signToken, AuthenticationError } = require('../utils/auth.js');
+const mongoose = require('mongoose');
+const { ObjectId } = require('mongoose');
+
 const resolvers = {
   Query: {
     // parent, args, then context
@@ -34,25 +37,56 @@ const resolvers = {
 
       return { token, user };
     },
-    addToWishlist: async (parent, { input }, context) => {
-      const { userId } = context.user;
-      const { gameId } = input;
+    // addToWishlist: async (parent, { input }, context) => {
+    //   const { userId } = context.user;
+    //   const { gameId } = input;
 
-      try {
-        const game = await Game.findById(gameId);
+    //   try {
+    //     const game = await Game.findById(ObjectId(gameId));
 
-        if (!game) {
-          throw new Error('Game not found');
+
+    //     if (!game) {
+    //       throw new Error('Game not found');
+    //     }
+
+    //     await User.findByIdAndUpdate(userId, { $push: { wishlist: game } });
+
+    //     return game;
+    //   } catch (error) {
+    //     console.error('Error adding to wishlist:', error);
+    //     throw new Error('Failed to add to wishlist');
+    //   }
+    // },
+    addToWishlist: async (_, { input }, context) => {
+      // Ensure the user is logged in
+      if (context.user) {
+        const { userId } = context.user;
+        const { gameId } = input;
+    
+        try {
+          // Check if the game exists
+          const game = await Game.findById(gameId);
+          if (!game) {
+            throw new Error('Game not found');
+          }
+    
+          // Add the game to the user's wishlist
+          const updatedUser = await User.findByIdAndUpdate(
+            userId,
+            { $addToSet: { wishlist: ObjectId(game.id) } },
+            { new: true, runValidators: true }
+          );
+    
+          return game; // Return the added game
+        } catch (error) {
+          console.error('Error adding to wishlist:', error);
+          throw new Error('Failed to add to wishlist');
         }
-
-        await User.findByIdAndUpdate(userId, { $push: { wishlist: game } });
-
-        return game;
-      } catch (error) {
-        console.error('Error adding to wishlist:', error);
-        throw new Error('Failed to add to wishlist');
+      } else {
+        throw new AuthenticationError('Not logged in');
       }
     },
+    
     addToCurrentlyPlaying: async (parent, { input }, context) => {
       const { userId } = context.user;
       const { gameId } = input;
