@@ -8,6 +8,9 @@ const userSchema = new mongoose.Schema({
     bio: {
         type: String
     },
+    avatar: {
+        type: String
+    },
     followers: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
@@ -15,6 +18,14 @@ const userSchema = new mongoose.Schema({
     reviews: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Review'
+    }],
+    wishlist: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Game'
+    }],
+    currentlyPlaying: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Game'
     }],
     favoriteGames: [String]
 });
