@@ -8,7 +8,7 @@ const userSchema = new mongoose.Schema({
     bio: {
         type: String
     },
-    friends: [{
+    followers: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
     }],
