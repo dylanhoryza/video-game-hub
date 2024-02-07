@@ -5,6 +5,7 @@ import 'slick-carousel/slick/slick-theme.css';
 import './home.css';
 import Login from './Login';
 import SignUp from './SignUp';
+import Navbar from './Navbar';
 
 const Backdrop = ({ onClick }) => {
   return <div className="backdrop" onClick={onClick}></div>;
@@ -71,17 +72,11 @@ const HomePage = () => {
   };
 
   return (
-    <div className="page-container">
-      <div className="navbar">
-        <ul>
-          <li>Home</li>
-          <li>Profile</li>
-          <li>Feed</li>
-          <li>Logout</li>
-        </ul>
-      </div>
+    
+
 
       <div className="content-container">
+        <Navbar />
         <div className="carousel-container">
           <div className="carousel-wrapper">
             <Slider {...settings}>
@@ -125,7 +120,7 @@ const HomePage = () => {
           </>
         )}
       </div>
-    </div>
+
   );
 };
 
