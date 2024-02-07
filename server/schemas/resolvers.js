@@ -80,34 +80,48 @@ const resolvers = {
     //     throw new Error('Failed to add to wishlist');
     //   }
     // },
+    // addToWishlist: async (_, { input }, context) => {
+    //   // Ensure the user is logged in
+    //   if (context.user) {
+    //     const { userId } = context.user;
+    //     const { gameId } = input;
+    //     console.log(`Attempting to add game with ID: ${gameId}`);
+    //     try {
+    //       // Check if the game exists
+    //       const game = await gameSchema.findById(gameId);
+    //       if (!game) {
+    //         throw new Error('Game not found');
+    //       }
+
+    //       // Add the game to the user's wishlist
+    //       const updatedUser = await User.findByIdAndUpdate(
+    //         userId,
+    //         { $addToSet: { wishlist: ObjectId(game.id) } },
+    //         { new: true, runValidators: true }
+    //       );
+
+    //       return game; // Return the added game
+    //     } catch (error) {
+    //       console.error('Error adding to wishlist:', error);
+    //       throw new ApolloError('Failed to add to wishlist', 'ADD_TO_WISHLIST_ERROR');
+    //     }
+    //   } else {
+    //     throw new AuthenticationError('Not logged in');
+    //   }
+    // },
+
     addToWishlist: async (_, { input }, context) => {
       // Ensure the user is logged in
       if (context.user) {
-        const { userId } = context.user;
-        const { gameId } = input;
-
-        try {
-          // Check if the game exists
-          const game = await Game.findById(gameId);
-          if (!game) {
-            throw new Error('Game not found');
-          }
-
-          // Add the game to the user's wishlist
-          const updatedUser = await User.findByIdAndUpdate(
-            userId,
-            { $addToSet: { wishlist: ObjectId(game.id) } },
-            { new: true, runValidators: true }
-          );
-
-          return game; // Return the added game
-        } catch (error) {
-          console.error('Error adding to wishlist:', error);
-          throw new ApolloError('Failed to add to wishlist', 'ADD_TO_WISHLIST_ERROR');
-        }
-      } else {
-        throw new AuthenticationError('Not logged in');
+        const updatedUser = await User.findOneAndUpdate(
+          { _id: context.user._id },
+          { $addToSet: { wishlist: input } },
+          { new: true, runValidators: true }
+        );
+        return updatedUser;
       }
+
+      throw new AuthenticationError('Not logged in');
     },
 
     addToCurrentlyPlaying: async (parent, { input }, context) => {

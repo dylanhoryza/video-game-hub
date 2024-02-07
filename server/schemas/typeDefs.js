@@ -33,6 +33,11 @@ type Game {
 
   input AddToWishlistInput {
     gameId: ID!
+    name: String!
+    image: String
+    platforms: [String]
+    rating: Float
+    releaseDate: String
     
   }
   

@@ -30,11 +30,17 @@ export const ADD_TO_WISHLIST = gql`
   mutation AddToWishlist($gameId: ID!) {
     addToWishlist(input: { gameId: $gameId }) {
       _id
-      name
-      image
-      platforms
-      rating
-      releaseDate
+      username
+      email
+      wishlist {
+        gameId
+        name
+        image
+        platforms
+        rating
+        releaseDate
+      }
+      
       
     }
   }
