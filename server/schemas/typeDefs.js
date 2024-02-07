@@ -33,6 +33,11 @@ type Game {
 
   input AddToWishlistInput {
     gameId: ID!
+    name: String!
+    image: String
+    platforms: [String]
+    rating: Float
+    releaseDate: String
     
   }
   
@@ -58,7 +63,7 @@ type Mutation {
     createPost(title: String!, content: String!, authorId: ID!): Post!
     deletePost(postId: ID!): Post
     updatePost(postId: ID!, content: String!): Post!
-  }
-`;
+}
 
+`;
 module.exports = typeDefs;
