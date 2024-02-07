@@ -18,6 +18,8 @@ type Auth {
 
 type Query {
     me: User
+    getPost(postId: ID!): Post
+    getAllPosts: [Post!]!
 }
 
 type Game {
@@ -39,11 +41,19 @@ type Game {
     
   }
 
+  type Post {
+    _id: ID!
+    title: String!
+    content: String!
+    author: User!
+  } 
+
 type Mutation {
     addUser(username: String!, email: String!, password: String!): Auth
     login(email: String!, password: String!): Auth
     addToWishlist(input: AddToWishlistInput!): Game
     addToCurrentlyPlaying(input: AddToCurrentlyPlayingInput!): Game
+    createPost(title: String!, content: String!, authorId: ID!): Post!
 }
 
 `;
