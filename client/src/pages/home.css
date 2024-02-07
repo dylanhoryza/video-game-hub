@@ -10,3 +10,13 @@
     margin-top: 20px; 
   }
   
+
+  p{
+    color: black;
+  }
+  .signup-link {
+
+
+    cursor: pointer;
+  }
+  
