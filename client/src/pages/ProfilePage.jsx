@@ -94,8 +94,11 @@ const ProfilePage = () => {
   const [addToWishlist] = useMutation(ADD_TO_WISHLIST);
   
   const handleAddToWishlist = async (gameId) => {
+    
     try {
+      console.log('here', addToWishlist.variables)
       const { data } = await addToWishlist({ variables: { gameId } });
+      console.log(data, 'incoming data====')
       setWishlist([...wishlist, data.addToWishlist]);
     } catch (error) {
       console.error('Error adding to wishlist:', error);

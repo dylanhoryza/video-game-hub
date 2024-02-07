@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
-
+const gameSchema = require('./Game')
 const userSchema = new mongoose.Schema(
     {
         username: {
@@ -32,10 +32,7 @@ const userSchema = new mongoose.Schema(
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Review'
         }],
-        wishlist: [{
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Game'
-        }],
+        wishlist: [gameSchema],
         currentlyPlaying: [{
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Game'
