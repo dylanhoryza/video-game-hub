@@ -1,0 +1,61 @@
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    padding: 10px;
+    z-index: 1000; /*navbar is above other content */
+  }
+  
+  .menu-toggle {
+    cursor: pointer;
+  }
+  
+  .hamburger {
+    width: 25px;
+    height: 3px;
+    background-color: #fff;
+    margin-bottom: 5px;
+    transition: transform 0.3s ease; /* Only transform property is transitioned */
+  }
+  
+  .open {
+    transform: rotate(-45deg) !important; 
+  }
+  
+  .open:nth-child(2) {
+    opacity: 0 !important; 
+  }
+  
+  .open:first-child {
+    transform: translateY(8px) rotate(-45deg) !important;
+  }
+  
+  .open:last-child {
+    transform: translateY(-8px) rotate(45deg) !important;
+  }
+  
+  .menu-items {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    position: absolute;
+    top: 50px; 
+    left: 0;
+    width: 100%; 
+  }
+  
+  .menu-items li {
+    margin-bottom: 10px;
+  }
+  
+  .menu-items li a {
+    color: #fff;
+    text-decoration: none;
+    padding: 10px;
+    display: block;
+  }
+  
+  .menu-items li a:hover {
+    background-color: #555; 
+  }
+  
