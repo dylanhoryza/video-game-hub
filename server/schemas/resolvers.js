@@ -53,12 +53,43 @@ const resolvers = {
 
       return { token, user };
     },
+    // create post function 
     createPost: async (_, { title, content, authorId }, context) => {
       if (!context.user) {
         throw new AuthenticationError('You must be logged in to create a post!');
       }
-      const newPost = new Post({ title, content, author: authorId });
+      const newPost = new Post({ title, content, author: authorId, createdAt: new Date() });
       return await newPost.save();
+    },
+    updatePost: async (_, { postId, content }, context) => {
+        if (!context.user) {
+          throw new AuthenticationError('You must be logged in to update a post!');
+        }
+
+        const updatedPost = await Post.findByIdAndUpdate(
+          postId,
+          { content, updatedAt: new Date() },
+          { new: true }
+        );
+        if (!updatedPost) {
+          throw new Error('Post not found')
+        }
+        return updatedPost;
+    },
+    // delete post function 
+    deletePost: async (_, { postId }) => {
+      try {
+        const deletedPost = await Post.findByIdAndDelete(postId);
+
+        if (!deletedPost) {
+          throw new Error('Post not found');
+        }
+
+        return deletedPost; // Return the deleted post
+      } catch (error) {
+        console.error('Error deleting post:', error);
+        throw new Error('Failed to delete post');
+      }
     },
     // addToWishlist: async (parent, { input }, context) => {
     //   const { userId } = context.user;
@@ -80,48 +111,34 @@ const resolvers = {
     //     throw new Error('Failed to add to wishlist');
     //   }
     // },
-    // addToWishlist: async (_, { input }, context) => {
-    //   // Ensure the user is logged in
-    //   if (context.user) {
-    //     const { userId } = context.user;
-    //     const { gameId } = input;
-    //     console.log(`Attempting to add game with ID: ${gameId}`);
-    //     try {
-    //       // Check if the game exists
-    //       const game = await gameSchema.findById(gameId);
-    //       if (!game) {
-    //         throw new Error('Game not found');
-    //       }
-
-    //       // Add the game to the user's wishlist
-    //       const updatedUser = await User.findByIdAndUpdate(
-    //         userId,
-    //         { $addToSet: { wishlist: ObjectId(game.id) } },
-    //         { new: true, runValidators: true }
-    //       );
-
-    //       return game; // Return the added game
-    //     } catch (error) {
-    //       console.error('Error adding to wishlist:', error);
-    //       throw new ApolloError('Failed to add to wishlist', 'ADD_TO_WISHLIST_ERROR');
-    //     }
-    //   } else {
-    //     throw new AuthenticationError('Not logged in');
-    //   }
-    // },
-
     addToWishlist: async (_, { input }, context) => {
       // Ensure the user is logged in
       if (context.user) {
-        const updatedUser = await User.findOneAndUpdate(
-          { _id: context.user._id },
-          { $addToSet: { wishlist: input } },
-          { new: true, runValidators: true }
-        );
-        return updatedUser;
-      }
+        const { userId } = context.user;
+        const { gameId } = input;
 
-      throw new AuthenticationError('Not logged in');
+        try {
+          // Check if the game exists
+          const game = await Game.findById(gameId);
+          if (!game) {
+            throw new Error('Game not found');
+          }
+
+          // Add the game to the user's wishlist
+          const updatedUser = await User.findByIdAndUpdate(
+            userId,
+            { $addToSet: { wishlist: ObjectId(game.id) } },
+            { new: true, runValidators: true }
+          );
+
+          return game; // Return the added game
+        } catch (error) {
+          console.error('Error adding to wishlist:', error);
+          throw new ApolloError('Failed to add to wishlist', 'ADD_TO_WISHLIST_ERROR');
+        }
+      } else {
+        throw new AuthenticationError('Not logged in');
+      }
     },
 
     addToCurrentlyPlaying: async (parent, { input }, context) => {
