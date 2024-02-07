@@ -1,14 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useQuery } from '@apollo/client';
+import { GET_ALL_POSTS } from '../utils/queries';
 
 const BlogPage = () => {
-
-    // test page layout 
-    const [forumPosts, setForumPosts] = useState([
-        { id: 1, title: 'First Post', content: 'This is some test text to see whats being rendered.' },
-        { id: 2, title: 'Second Post', content: 'We will probably want to do cards instead of li just a quick backbone' },
-    ]);
-
     const [newPost, setNewPost] = useState({ title: '', content: '' });
 
     const handleInputChange = (e) => {
@@ -18,32 +13,36 @@ const BlogPage = () => {
         });
     };
 
+    const { loading, error, data } = useQuery(GET_ALL_POSTS);
+
+    if (loading) return <p>Loading...</p>;
+    if (error) return <p>Error: {error.message}</p>;
+
     const handleAddPost = () => {
-        setForumPosts([...forumPosts, { id: forumPosts.length + 1, ...newPost }]);
-        setNewPost({ title: '', content: '' });
     };
 
     return (
         <div>
-            <h2>Video Game Forum</h2>
+            <header>
+                <h2>Video Game Forum</h2>
+                <Link to='/profile'>To Home</Link>
+            </header>
 
-            {/* link to navigate back to profile page */}
-            <Link to='/profile'>To Home</Link>
-
-            { /* list of forum posts */}
-            <ul>
-                {forumPosts.map((post) => (
-                    <li key={post.id}>
-                        <strong>{post.title}</strong>
+            <section>
+                <h3>Posts</h3>
+                {data.getAllPosts.map(post => (
+                    <div key={post._id}>
+                        <h2>{post.title}</h2>
                         <p>{post.content}</p>
-                    </li>
+                        <p>Author: {post.author.username}</p>
+                        <p>Created At: {Date()}</p>
+                    </div>
                 ))}
-            </ul>
+            </section>
 
-            { /* form for createing new posts */}
-            <div>
+            <section>
                 <h3>Create a Post</h3>
-                <form>
+                <form onSubmit={handleAddPost}>
                     <label>Title:
                         <input
                             type='text'
@@ -61,13 +60,11 @@ const BlogPage = () => {
                         />
                     </label>
                     <br />
-                    <button type='button' onClick={handleAddPost}>
-                        Add Post
-                    </button>
+                    <button type='submit'>Add Post</button>
                 </form>
-            </div>
+            </section>
         </div>
-    )
+    );
 }
 
 export default BlogPage;

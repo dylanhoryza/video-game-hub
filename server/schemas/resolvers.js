@@ -60,6 +60,36 @@ const resolvers = {
       const newPost = new Post({ title, content, author: authorId });
       return await newPost.save();
     },
+    updatePost: async (_, { postId, content }, context) => {
+      if (!context.user) {
+        throw new AuthenticationError('You must be logged in to update a post!');
+      }
+
+      const updatedPost = await Post.findByIdAndUpdate(
+        postId,
+        { content, updatedAt: new Date() },
+        { new: true }
+      );
+      if (!updatedPost) {
+        throw new Error('Post not found')
+      }
+      return updatedPost;
+    },
+    // delete post function 
+    deletePost: async (_, { postId }) => {
+      try {
+        const deletedPost = await Post.findByIdAndDelete(postId);
+
+        if (!deletedPost) {
+          throw new Error('Post not found');
+        }
+
+        return deletedPost; // Return the deleted post
+      } catch (error) {
+        console.error('Error deleting post:', error);
+        throw new Error('Failed to delete post');
+      }
+    },
     // addToWishlist: async (parent, { input }, context) => {
     //   const { userId } = context.user;
     //   const { gameId } = input;

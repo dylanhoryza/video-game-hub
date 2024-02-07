@@ -11,3 +11,16 @@ export const GET_USER_BY_ID = gql`
     }
   }
 `;
+
+export const GET_ALL_POSTS = gql`
+query GetAllPosts {
+  getAllPosts {
+    _id
+    title
+    content
+    author {
+      username
+    }
+  }
+}
+`
