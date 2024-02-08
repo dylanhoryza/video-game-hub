@@ -1,17 +1,11 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useQuery } from '@apollo/client';
- navbar-customization
-import { GET_ALL_POSTS } from '../utils/queries';
-import Navbar from './Navbar';
-
-=======
 import { GET_ALL_POSTS, GET_COMMENTS_BY_POST_ID } from '../utils/queries';
-main
+import Navbar from './Navbar';
 
 const BlogPage = () => {
     const [newPost, setNewPost] = useState({ title: '', content: '' });
-
 
     const handleInputChange = (e) => {
         setNewPost({
@@ -22,21 +16,17 @@ const BlogPage = () => {
 
     const { loading, error, data } = useQuery(GET_ALL_POSTS);
 
+    const handleAddPost = () => {
+        // Implement the logic for adding a new post
+    };
+
     if (loading) return <p>Loading...</p>;
     if (error) return <p>Error: {error.message}</p>;
 
-    const handleAddPost = () => {
-
-    };
-
-    return (
+    return ( 
         <div>
- navbar-customization
-             <Navbar />
-            <header>
-=======
+            <Navbar />
             <header className='forum-header'>
- main
                 <h2>Video Game Forum</h2>
                 <Link to='/profile'>To Home</Link>
             </header>
@@ -81,16 +71,12 @@ const BlogPage = () => {
             </section>
         </div>
     );
-}
+};
 
 const Comments = ({ postId }) => {
     const { loading, error, data } = useQuery(GET_COMMENTS_BY_POST_ID, {
         variables: { postId },
     });
-
-    console.log("Loading:", loading);
-    console.log("Error:", error);
-    console.log("Data:", data);
 
     if (loading) return <p>Loading comments...</p>;
     if (error) return <p>Error: {error.message}</p>;
@@ -107,6 +93,6 @@ const Comments = ({ postId }) => {
             ))}
         </div>
     );
-}
+};
 
 export default BlogPage;
