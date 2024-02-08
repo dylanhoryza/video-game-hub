@@ -5,7 +5,7 @@ import { faPlaystation, faXbox, faWindows } from '@fortawesome/free-brands-svg-i
 import { Link } from 'react-router-dom';
 import { ADD_TO_WISHLIST } from '../utils/mutations';
 import { ADD_TO_CURRENTLY_PLAYING } from '../utils/mutations';
-import { useMutation } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client';
 
 
 
@@ -54,56 +54,65 @@ const ProfilePage = () => {
     }
   };
 
-  // Function to get each platform for a game and turn it into a string
-  const getPlatformStr = (platforms) => {
-    const platformStr = platforms.map(each => each.platform.name).join(", ");
-    if(platformStr.length > 3) {
-      return platformStr;
-    } 
-    return platformStr;
-  }
-
   // Function to turn platform names into images
   const getPlatformIcons = (platforms) => {
-    return platforms.map((platform, index) => {
-      let icon = null;
-      switch (platform.platform.name) {
-        case 'PlayStation':
-          icon = <FontAwesomeIcon icon={faPlaystation} />;
-          break;
-        case 'Xbox':
-          icon = <FontAwesomeIcon icon={faXbox} />;
-          break;
-        case 'PC':
-          icon = <FontAwesomeIcon icon={faWindows} />;
-          break;
-        default:
-          icon = null;
-      }
-      return <span key={index}>{icon}</span>;
-    });
+    // Check if platforms is defined and is an array
+    if (Array.isArray(platforms)) {
+      return platforms.map((platform, index) => {
+        let icon = null;
+        switch (platform.name) {
+          case 'PlayStation':
+            icon = <FontAwesomeIcon icon={faPlaystation} />;
+            break;
+          case 'Xbox':
+            icon = <FontAwesomeIcon icon={faXbox} />;
+            break;
+          case 'PC':
+            icon = <FontAwesomeIcon icon={faWindows} />;
+            break;
+          default:
+            icon = null;
+        }
+        return <span key={index}>{icon}</span>;
+      });
+    }
+    // Return an empty array or a default value if platforms is not an array
+    return [];
   };
-
-  // const handleAddToWishlist = (gameId) => {
-  //   const selectedGame = searchResults.find((game) => game.id === gameId);
-  //   if (selectedGame) {
-  //     setWishlist([...wishlist, selectedGame]);
-  //   }
-  // };
-
   const [addToWishlist] = useMutation(ADD_TO_WISHLIST);
   
   const handleAddToWishlist = async (gameId) => {
-    
     try {
-      console.log('here', addToWishlist.variables)
-      const { data } = await addToWishlist({ variables: { gameId } });
-      console.log(data, 'incoming data====')
+      // Find the game object using the gameId
+      const game = searchResults.find((game) => game.id === gameId);
+      console.log(game);
+      if (!game) {
+        throw new Error('Game not found');
+      }
+  
+      // Convert gameId to a string and map platforms to an array of strings
+      const input = {
+        gameId: game.id.toString(), // Convert gameId to a string
+        name: game.name,
+        image: game.background_image,
+        platforms: game.platforms.map(platform => platform.name), // Map platforms to an array of strings
+        rating: game.rating,
+        releaseDate: game.released,
+      };
+  
+      // Call the addToWishlist mutation with the correct variable name
+      const { data } = await addToWishlist({
+        variables: {
+          gameData: input, // Use the correct variable name as defined in your GraphQL schema
+        },
+      });
+  
       setWishlist([...wishlist, data.addToWishlist]);
     } catch (error) {
       console.error('Error adding to wishlist:', error);
     }
   };
+  
 
   const [addToCurrentlyPlaying] = useMutation(ADD_TO_CURRENTLY_PLAYING);
 

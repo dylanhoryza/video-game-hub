@@ -1,5 +1,5 @@
 const { User } = require('../models');
-const { Game } = require('../models');
+const Game  = require('../models');
 const { Post } = require('../models');
 const { Comment } = require('../models');
 const { Reaction } = require('../models');
@@ -140,18 +140,64 @@ const resolvers = {
     //   }
     // },
 
-    addToWishlist: async (_, { input }, context) => {
-      // Ensure the user is logged in
+    // addToWishlist: async (_, { input }, context) => {
+    //   // Ensure the user is logged in
+    //   if (context.user) {
+    //     const updatedUser = await User.findOneAndUpdate(
+    //       { _id: context.user._id },
+    //       { $addToSet: { wishlist: input } },
+    //       { new: true, runValidators: true }
+    //     );
+    //     return updatedUser;
+    //   }
+
+    //   throw new AuthenticationError('Not logged in');
+    // },
+    // addToWishlist: async (_, { input }, context) => {
+    //   // Ensure the user is logged in
+    //   if (context.user) {
+    //     // Check if the game already exists
+    //     let game = await Game.findById(input.gameId);
+    
+    //     if (!game) {
+    //       // If not, create a new Game instance with the data from the input
+    //       game = new Game({
+    //         _id: input.gameId,
+    //         name: input.name,
+    //         image: input.image, // Make sure this matches the field name in the Game schema
+    //         platforms: input.platforms,
+    //         rating: input.rating,
+    //         releaseDate: input.releaseDate,
+    //       });
+    //       // Save the new game to the database
+    //       await game.save();
+    //     }
+    
+    //     // Add the game to the user's wishlist
+    //     const updatedUser = await User.findOneAndUpdate(
+    //       { _id: context.user._id },
+    //       { $addToSet: { wishlist: game } }, // Add the game object
+    //       { new: true, runValidators: true }
+    //     );
+    
+    //     return updatedUser;
+    //   }
+    
+    //   throw new AuthenticationError('Not logged in');
+    // },
+
+    addToWishlist: async (parent, { gameData }, context) => {
       if (context.user) {
-        const updatedUser = await User.findOneAndUpdate(
+        const updatedUser = await User.findByIdAndUpdate(
           { _id: context.user._id },
-          { $addToSet: { wishlist: input } },
-          { new: true, runValidators: true }
+          { $push: { wishlist: gameData } },
+          { new: true }
         );
+
         return updatedUser;
       }
 
-      throw new AuthenticationError('Not logged in');
+      throw AuthenticationError;
     },
 
     addToCurrentlyPlaying: async (parent, { input }, context) => {
