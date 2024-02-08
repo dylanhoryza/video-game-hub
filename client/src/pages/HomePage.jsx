@@ -5,16 +5,18 @@ import 'slick-carousel/slick/slick-theme.css';
 import './home.css';
 import Login from './Login';
 import SignUp from './SignUp';
+import Navbar from './Navbar';
+//import ParticlesBackground from './ParticlesBackground';
 
-// Backdrop component for modals
 const Backdrop = ({ onClick }) => {
   return <div className="backdrop" onClick={onClick}></div>;
 };
 
 const HomePage = () => {
   const [games, setGames] = useState([]);
-  const [showLogin, setShowLogin] = useState(false); // State to manage login modal visibility
-  const [showSignUp, setShowSignUp] = useState(false); // State to manage sign-up modal visibility
+  const [showLogin, setShowLogin] = useState(false);
+  const [showSignUp, setShowSignUp] = useState(false);
+  const [isSignUpMode, setIsSignUpMode] = useState(false); 
 
   useEffect(() => {
     const getAllGames = async () => {
@@ -47,68 +49,80 @@ const HomePage = () => {
     pauseOnHover: true,
   };
 
-  // Event handler to show  modals
   const handleShowLogin = () => {
     setShowLogin(true);
+    setIsSignUpMode(false); 
   };
 
   const handleCloseLogin = () => {
     setShowLogin(false);
   };
 
-  
   const handleShowSignUp = () => {
     setShowSignUp(true);
   };
 
- 
   const handleCloseSignUp = () => {
     setShowSignUp(false);
   };
 
+  const handleSignUpLinkClick = () => {
+    setShowLogin(false); // Close the login modal
+    setIsSignUpMode(true); // Set signup mode to true
+    setShowSignUp(true); // Show the signup modal
+  };
+
   return (
-    <div className="carousel-container">
-      <div className="carousel-wrapper">
-        <Slider {...settings}>
-          {games.map((game) => (
-            <div key={game.id}>
-              <img src={game.background_image} alt={game.name} style={{ width: '100%', height: 'auto' }} />
+    
+
+
+      <div className="content-container">
+     
+        <Navbar />
+        <div className="carousel-container">
+          <div className="carousel-wrapper">
+            <Slider {...settings}>
+              {games.map((game) => (
+                <div key={game.id}>
+                  <img src={game.background_image} alt={game.name} style={{ width: '100%', height: 'auto' }} />
+                </div>
+              ))}
+            </Slider>
+          </div>
+        </div>
+
+        <button className="login-button" onClick={handleShowLogin}>
+          Login
+        </button>
+
+        {showLogin && (
+          <>
+            <Backdrop onClick={handleCloseLogin} />
+            <div className="login-overlay">
+              <div className="login-modal">
+                <Login onClose={handleCloseLogin} />
+                {!isSignUpMode && (
+                  <p className="signup-link" onClick={handleSignUpLinkClick}>
+                    Don't have an account? Click here!
+                  </p>
+                )}
+              </div>
             </div>
-          ))}
-        </Slider>
+          </>
+        )}
+
+        {showSignUp && (
+          <>
+            <Backdrop onClick={handleCloseSignUp} />
+            <div className="signup-overlay">
+              <div className="signup-modal">
+                <SignUp onClose={handleCloseSignUp} />
+              </div>
+            </div>
+          </>
+        )}
       </div>
 
-      {showLogin && (
-        <>
-          <Backdrop onClick={handleCloseLogin} />
-          <div className="login-overlay">
-            <div className="login-modal">
-              <Login onClose={handleCloseLogin} />
-            </div>
-          </div>
-        </>
-      )}
-
-
-      {showSignUp && (
-        <>
-          <Backdrop onClick={handleCloseSignUp} />
-          <div className="signup-overlay">
-            <div className="signup-modal">
-              <SignUp onClose={handleCloseSignUp} />
-            </div>
-          </div>
-        </>
-      )}
-
-
-      <button className="login-button" onClick={handleShowLogin}>
-        Login
-      </button>
-      <button className="signup-button" onClick={handleShowSignUp}>
-        Sign Up
-      </button>
-    </div>
   );
 };
 
