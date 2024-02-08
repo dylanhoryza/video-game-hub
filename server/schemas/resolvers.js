@@ -29,6 +29,14 @@ const resolvers = {
       }
       return await Post.find();
     },
+    comments: async (parent, { postId }, context) => {
+      try {
+        const comments = await Comment.find({ post: postId }).populate('author');
+        return comments;
+      } catch (error) {
+        throw new Error('Failed to fetch comments');
+      }
+    },
   },
   Mutation: {
     addUser: async (parent, { username, email, password }) => {
@@ -58,7 +66,11 @@ const resolvers = {
         throw new AuthenticationError('You must be logged in to create a post!');
       }
       const newPost = new Post({ title, content, author: authorId });
-      return await newPost.save();
+      const savedPost = await newPost.save();
+      // Format timestamps to a readable format
+      savedPost.createdAt = savedPost.createdAt.toLocaleString();
+      savedPost.updatedAt = savedPost.updatedAt.toLocaleString(); 
+      return savedPost;
     },
     updatePost: async (_, { postId, content }, context) => {
       if (!context.user) {
@@ -67,7 +79,7 @@ const resolvers = {
 
       const updatedPost = await Post.findByIdAndUpdate(
         postId,
-        { content, updatedAt: new Date() },
+        { content, updatedAt: new Date().toISOString() },
         { new: true }
       );
       if (!updatedPost) {
@@ -88,6 +100,44 @@ const resolvers = {
       } catch (error) {
         console.error('Error deleting post:', error);
         throw new Error('Failed to delete post');
+      }
+    },
+    addComment: async (parent, { postId, text, authorId }, context) => {
+      try {
+        const newComment = new Comment({
+          content: text,
+          author: authorId,
+          post: postId,
+        });
+        const savedComment = await newComment.save();
+        return savedComment;
+      } catch (error) {
+        throw new Error('Failed to add comment');
+      }
+    },
+    updateComment: async (parent, { id, text }, context) => {
+      try {
+        const updatedComment = await Comment.findByIdAndUpdate(
+          id,
+          { text, updatedAt: new Date() }, // Set text and updatedAt fields
+          { new: true }
+        );
+
+        if (!updatedComment) {
+          throw new Error('Comment not found');
+        }
+
+        return updatedComment;
+      } catch (error) {
+        throw new Error('Failed to update comment');
+      }
+    },
+    deleteComment: async (parent, { id }, context) => {
+      try {
+        await Comment.findByIdAndDelete(id);
+        return id;
+      } catch (error) {
+        throw new Error('Failed to delete comment');
       }
     },
     // addToWishlist: async (parent, { input }, context) => {
