@@ -15,12 +15,10 @@ const postSchema = new mongoose.Schema({
         type: String,
         ref: 'User', 
         required: true,
-    },
-    createdAt: {
-        type: Date,
-        default: Date.now, // might have to make a utils helper for date format for this
-        index: true,
-    },
+    }
+}, {
+    timestamps: true
+});
     // these are all optional and i'd like your guys' feedback on if we should include these or not
     // makes each post have a readable url 
     // slug: {
@@ -42,7 +40,6 @@ const postSchema = new mongoose.Schema({
     //     type: Number,
     //     default: 0,
     // }
-});
 
 const Post = mongoose.model('Post', postSchema);
 

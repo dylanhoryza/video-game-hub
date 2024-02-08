@@ -20,6 +20,7 @@ type Query {
     me: User
     getPost(postId: ID!): Post
     getAllPosts: [Post!]!
+    comments(postId: ID!): [Comment]!
 }
 
 type Game {
@@ -55,6 +56,14 @@ type Game {
     updatedAt: String
   } 
 
+  type Comment {
+    id: ID!
+    content: String!
+    author: User!
+    createdAt: String!
+    updatedAt: String
+  }
+
 type Mutation {
     addUser(username: String!, email: String!, password: String!): Auth
     login(email: String!, password: String!): Auth
@@ -63,7 +72,10 @@ type Mutation {
     createPost(title: String!, content: String!, authorId: ID!): Post!
     deletePost(postId: ID!): Post
     updatePost(postId: ID!, content: String!): Post!
+    addComment(postId: ID!, text: String!, authorId: ID!): Comment!
+    updateComment(id: ID!, text: String!): Comment!
+    deleteComment(id: ID!): ID!
 }
-
 `;
+
 module.exports = typeDefs;
