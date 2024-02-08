@@ -23,7 +23,7 @@ const BlogPage = () => {
     if (loading) return <p>Loading...</p>;
     if (error) return <p>Error: {error.message}</p>;
 
-    return (
+    return ( 
         <div>
             <Navbar />
             <header className='forum-header'>
