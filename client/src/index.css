@@ -1,1 +1,35 @@
+.forum-header {
+    text-align: center;
+}
 
+.post {
+    margin-bottom: 20px; 
+    padding: 15px; 
+    border: 1px solid #ddd; 
+    border-radius: 8px; 
+    text-align: center;
+  }
+  
+  h3 {
+    text-align: center;
+  }
+
+  .post h2 {
+    font-size: 18px;
+    margin-bottom: 10px;
+  }
+  
+  .post p {
+    margin-bottom: 5px;
+  }
+  
+  .post .author {
+    font-style: italic;
+    color: #666;
+  }
+  
+  .post .created-at {
+    font-size: 14px;
+    color: #999;
+  }
+  

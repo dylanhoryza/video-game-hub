@@ -21,6 +21,22 @@ query GetAllPosts {
     author {
       username
     }
+    createdAt
+    updatedAt
   }
 }
 `
+export const GET_COMMENTS_BY_POST_ID = gql`
+  query GetCommentsByPostId($postId: ID!) {
+    comments(postId: $postId) {
+      id
+      content
+      createdAt
+      updatedAt
+      author {
+        _id
+        username
+      }
+    }
+  }
+`;
