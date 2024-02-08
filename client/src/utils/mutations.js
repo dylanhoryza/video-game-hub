@@ -27,8 +27,8 @@ mutation Login($email: String!, $password: String!) {
 `;
 
 export const ADD_TO_WISHLIST = gql`
-  mutation AddToWishlist($gameId: ID!) {
-    addToWishlist(input: { gameId: $gameId }) {
+  mutation addToWishlist($gameData: AddToWishlistInput!) {
+    addToWishlist(gameData: $gameData) {
       _id
       username
       email

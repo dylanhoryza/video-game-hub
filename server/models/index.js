@@ -7,4 +7,4 @@ const Attachment = require('./Attachment');
 const Notification = require('./Notifications')
 
 
-module.exports = { User, Game, Post, Comment, Reaction, Attachment, Notification };
+module.exports = { User, Post, Comment, Reaction, Attachment, Notification };

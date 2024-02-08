@@ -24,7 +24,7 @@ type Query {
 }
 
 type Game {
-    _id: ID!
+    gameId: ID!
     name: String!
     image: String
     platforms: [String]
@@ -33,7 +33,7 @@ type Game {
   }
 
   input AddToWishlistInput {
-    gameId: ID!
+    gameId: String!
     name: String!
     image: String
     platforms: [String]
@@ -67,7 +67,7 @@ type Game {
 type Mutation {
     addUser(username: String!, email: String!, password: String!): Auth
     login(email: String!, password: String!): Auth
-    addToWishlist(input: AddToWishlistInput!): Game
+    addToWishlist(gameData: AddToWishlistInput!): User
     addToCurrentlyPlaying(input: AddToCurrentlyPlayingInput!): Game
     createPost(title: String!, content: String!, authorId: ID!): Post!
     deletePost(postId: ID!): Post
