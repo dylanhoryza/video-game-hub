@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import './Navbar.css';
 
@@ -6,10 +6,10 @@ const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false); // Track authentication state
   const [showNotification, setShowNotification] = useState(false); // Track notification state
+  const menuRef = useRef(null);
 
   // Function to handle logout
   const handleLogout = () => {
-    // Perform logout actions (clear authentication state, redirect user, etc.)
     setIsLoggedIn(false); // Update authentication state
   };
 
@@ -21,15 +21,22 @@ const Navbar = () => {
     }, 3000); // Hide the notification after 3 seconds
   };
 
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
   const toggleMenu = () => {
     setIsOpen(!isOpen);
-  };
-
-  // Function to handle clicking on the Forum link
-  const handleForumClick = () => {
-    if (!isLoggedIn) {
-      showLoginNotification(); // Show the login notification if user is not logged in
-    }
   };
 
   return (
@@ -40,10 +47,10 @@ const Navbar = () => {
         <div className={`hamburger ${isOpen ? 'open' : ''}`}></div>
       </div>
       {isOpen && (
-        <ul className="menu-items">
+        <ul className="menu-items" ref={menuRef}>
           <li><Link to="/">Home</Link></li>
           <li><Link to="/profile">Profile</Link></li>
-          <li onClick={handleForumClick}><Link to="/forum">Forum</Link></li>
+          <li><Link to="/blog">Forum</Link></li>
           {isLoggedIn && (
             <li><button onClick={handleLogout}>Logout</button></li>
           )}
@@ -51,7 +58,7 @@ const Navbar = () => {
       )}
       {showNotification && (
         <div className="notification">
-          <p>Please log in or create a user first to access the forum.</p>
+          <p>User is not logged in!</p>
         </div>
       )}
     </nav>
