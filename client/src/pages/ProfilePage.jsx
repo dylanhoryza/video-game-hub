@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 import { ADD_TO_WISHLIST } from '../utils/mutations';
 import { ADD_TO_CURRENTLY_PLAYING } from '../utils/mutations';
 import { useMutation } from '@apollo/client';
-import Navbar from './Navbar';
+
 
 
 // Profile page function
@@ -121,7 +121,6 @@ const ProfilePage = () => {
 
   return (
     <div className='container'>
-      <Navbar />
       <header className='my-4'>
         <h1>Welcome, User!</h1>
       </header>

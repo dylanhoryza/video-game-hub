@@ -1,13 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useQuery } from '@apollo/client';
- navbar-customization
-import { GET_ALL_POSTS } from '../utils/queries';
-import Navbar from './Navbar';
-
-=======
 import { GET_ALL_POSTS, GET_COMMENTS_BY_POST_ID } from '../utils/queries';
-main
 
 const BlogPage = () => {
     const [newPost, setNewPost] = useState({ title: '', content: '' });
@@ -31,12 +25,7 @@ const BlogPage = () => {
 
     return (
         <div>
- navbar-customization
-             <Navbar />
-            <header>
-=======
             <header className='forum-header'>
- main
                 <h2>Video Game Forum</h2>
                 <Link to='/profile'>To Home</Link>
             </header>
