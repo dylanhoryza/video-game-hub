@@ -6,6 +6,7 @@ import './home.css';
 import Login from './Login';
 import SignUp from './SignUp';
 import Navbar from './Navbar';
+import ParticlesBackground from './ParticlesBackground';
 
 const Backdrop = ({ onClick }) => {
   return <div className="backdrop" onClick={onClick}></div>;
@@ -76,6 +77,7 @@ const HomePage = () => {
 
 
       <div className="content-container">
+        <ParticlesBackground />
         <Navbar />
         <div className="carousel-container">
           <div className="carousel-wrapper">
