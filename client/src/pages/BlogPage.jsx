@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useQuery } from '@apollo/client';
 import { GET_ALL_POSTS } from '../utils/queries';
+import Navbar from './Navbar';
+
 
 const BlogPage = () => {
     const [newPost, setNewPost] = useState({ title: '', content: '' });
@@ -23,6 +25,7 @@ const BlogPage = () => {
 
     return (
         <div>
+             <Navbar />
             <header>
                 <h2>Video Game Forum</h2>
                 <Link to='/profile'>To Home</Link>
