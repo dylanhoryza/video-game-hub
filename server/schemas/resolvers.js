@@ -1,5 +1,5 @@
 const { User } = require('../models');
-const Game  = require('../models');
+const Game = require('../models');
 const { Post } = require('../models');
 const { Comment } = require('../models');
 const { Reaction } = require('../models');
@@ -61,15 +61,19 @@ const resolvers = {
 
       return { token, user };
     },
-    createPost: async (_, { title, content, authorId }, context) => {
+    createPost: async (_, { title, content }, context) => {
       if (!context.user) {
         throw new AuthenticationError('You must be logged in to create a post!');
       }
-      const newPost = new Post({ title, content, author: authorId });
+      const newPost = new Post({
+        title,
+        content,
+        author: context.user._id
+      });
       const savedPost = await newPost.save();
       // Format timestamps to a readable format
       savedPost.createdAt = savedPost.createdAt.toLocaleString();
-      savedPost.updatedAt = savedPost.updatedAt.toLocaleString(); 
+      savedPost.updatedAt = savedPost.updatedAt.toLocaleString();
       return savedPost;
     },
     updatePost: async (_, { postId, content }, context) => {
@@ -102,11 +106,14 @@ const resolvers = {
         throw new Error('Failed to delete post');
       }
     },
-    addComment: async (parent, { postId, text, authorId }, context) => {
+    addComment: async (parent, { postId, text }, context) => {
       try {
+        if (!context.user) {
+          throw new AuthenticationError('You must be logged in to add a comment!');
+        }
         const newComment = new Comment({
           content: text,
-          author: authorId,
+          author: context.user._id,
           post: postId,
         });
         const savedComment = await newComment.save();
@@ -208,7 +215,7 @@ const resolvers = {
     //   if (context.user) {
     //     // Check if the game already exists
     //     let game = await Game.findById(input.gameId);
-    
+
     //     if (!game) {
     //       // If not, create a new Game instance with the data from the input
     //       game = new Game({
@@ -222,17 +229,17 @@ const resolvers = {
     //       // Save the new game to the database
     //       await game.save();
     //     }
-    
+
     //     // Add the game to the user's wishlist
     //     const updatedUser = await User.findOneAndUpdate(
     //       { _id: context.user._id },
     //       { $addToSet: { wishlist: game } }, // Add the game object
     //       { new: true, runValidators: true }
     //     );
-    
+
     //     return updatedUser;
     //   }
-    
+
     //   throw new AuthenticationError('Not logged in');
     // },
 

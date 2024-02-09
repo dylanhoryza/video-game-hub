@@ -69,7 +69,7 @@ type Mutation {
     login(email: String!, password: String!): Auth
     addToWishlist(gameData: AddToWishlistInput!): User
     addToCurrentlyPlaying(input: AddToCurrentlyPlayingInput!): Game
-    createPost(title: String!, content: String!, authorId: ID!): Post!
+    createPost(title: String!, content: String!): Post!
     deletePost(postId: ID!): Post
     updatePost(postId: ID!, content: String!): Post!
     addComment(postId: ID!, text: String!, authorId: ID!): Comment!
