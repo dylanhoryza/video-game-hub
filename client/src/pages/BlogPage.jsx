@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useQuery } from '@apollo/client';
-import { GET_ALL_POSTS, GET_COMMENTS_BY_POST_ID } from '../utils/queries';
+import { useQuery, useMutation } from '@apollo/client';
+import { GET_ALL_POSTS } from '../utils/queries';
+import { CREATE_POST } from '../utils/mutations'; 
 import Navbar from './Navbar';
+import Comments from './Comments'; 
+import CommentForm from './CommentForm';
 
 const BlogPage = () => {
     const [newPost, setNewPost] = useState({ title: '', content: '' });
@@ -15,9 +18,26 @@ const BlogPage = () => {
     };
 
     const { loading, error, data } = useQuery(GET_ALL_POSTS);
+    const [createPost] = useMutation(CREATE_POST, {
+        refetchQueries: [{ query: GET_ALL_POSTS }],
+    });
 
-    const handleAddPost = () => {
-        // Implement the logic for adding a new post
+    // grab auth useEffect possibly for user id to pass that value as the id 
+    // save blogs to user
+    const handleAddPost = async (e) => {
+        e.preventDefault();
+        try {
+            await createPost({
+                variables: {
+                    title: newPost.title,
+                    content: newPost.content,
+                },
+            });
+            // Reset form field after successful submission
+            setNewPost({ title: '', content: '' });
+        } catch (error) {
+            console.error('Error adding post:', error);
+        }
     };
 
     if (loading) return <p>Loading...</p>;
@@ -33,6 +53,7 @@ const BlogPage = () => {
 
             <section className="forum-card">
                 <h3>Posts</h3>
+                
                 {data.getAllPosts.map(post => (
                     <div className="post" key={post._id}>
                         <h2>{post.title}</h2>
@@ -40,7 +61,8 @@ const BlogPage = () => {
                         <p className="author">Author: {post.author.username}</p>
                         <p className="created-at">{post.updatedAt ? `Updated At: ${new Date(parseInt(post.createdAt)).toLocaleString()}` : `Created At: ${new Date(parseInt(post.createdAt)).toLocaleString()}`}</p>
                         <div className="comments">
-                            <Comments postId={post._id} />
+                            <CommentForm postId={post._id} />
+                            <Comments postId={post._id} /> 
                         </div>
                     </div>
                 ))}
@@ -69,28 +91,6 @@ const BlogPage = () => {
                     <button type='submit'>Add Post</button>
                 </form>
             </section>
-        </div>
-    );
-};
-
-const Comments = ({ postId }) => {
-    const { loading, error, data } = useQuery(GET_COMMENTS_BY_POST_ID, {
-        variables: { postId },
-    });
-
-    if (loading) return <p>Loading comments...</p>;
-    if (error) return <p>Error: {error.message}</p>;
-
-    return (
-        <div>
-            <h4>Comments</h4>
-            {data.comments.map(comment => (
-                <div key={comment.id}>
-                    <p>{comment.content}</p>
-                    <p>By: {comment.author.username}</p>
-                    <p>{comment.updatedAt ? `Updated At: ${new Date(parseInt(comment.updatedAt)).toLocaleDateString()}` : `Created At: ${new Date(parseInt(comment.createdAt)).toLocaleDateString()}`}</p>
-                </div>
-            ))}
         </div>
     );
 };

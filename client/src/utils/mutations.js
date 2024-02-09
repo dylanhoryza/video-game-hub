@@ -59,3 +59,31 @@ export const ADD_TO_CURRENTLY_PLAYING = gql`
     }
   }
 `;
+
+export const CREATE_POST = gql`
+  mutation CreatePost($title: String!, $content: String!) {
+    createPost(title: $title, content: $content) {
+      _id
+      content
+      createdAt
+      title
+      author {
+        _id
+        # Add other fields you may need from the author
+      }
+    }
+  }
+`;
+
+export const ADD_COMMENT = gql`
+mutation AddComment($postId: ID!, $text: String!, $authorId: ID!) {
+  addComment(postId: $postId, text: $text, authorId: $authorId) {
+    content
+    createdAt
+    id
+    author {
+      _id
+    }
+  }
+}
+`
