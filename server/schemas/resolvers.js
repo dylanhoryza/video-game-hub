@@ -1,16 +1,9 @@
-const { User } = require('../models');
-const Game = require('../models');
-const { Post } = require('../models');
-const { Comment } = require('../models');
-const { Reaction } = require('../models');
-const { Notification } = require('../models');
+const { User, Game, Post, Comment } = require('../models');
 const { signToken, AuthenticationError } = require('../utils/auth.js');
 const mongoose = require('mongoose');
-const { ObjectId } = require('mongoose');
 
 const resolvers = {
   Query: {
-    // parent, args, then context
     me: async (_, __, context) => {
       if (context.user) {
         return await User.findOne({ _id: context.user._id });
@@ -29,7 +22,7 @@ const resolvers = {
       }
       return await Post.find();
     },
-    comments: async (parent, { postId }, context) => {
+    comments: async (_, { postId }, context) => {
       try {
         const comments = await Comment.find({ post: postId }).populate('author');
         return comments;
@@ -39,22 +32,22 @@ const resolvers = {
     },
   },
   Mutation: {
-    addUser: async (parent, { username, email, password }) => {
+    addUser: async (_, { username, email, password }) => {
       const user = await User.create({ username, email, password });
       const token = signToken(user);
       return { token, user };
     },
-    login: async (parent, { email, password }) => {
+    login: async (_, { email, password }) => {
       const user = await User.findOne({ email });
 
       if (!user) {
-        throw AuthenticationError('Invalid email or password');
+        throw new AuthenticationError('Invalid email or password');
       }
 
       const correctPw = await user.isCorrectPassword(password);
 
       if (!correctPw) {
-        throw AuthenticationError;
+        throw new AuthenticationError('Invalid email or password');
       }
 
       const token = signToken(user);
@@ -71,7 +64,6 @@ const resolvers = {
         author: context.user._id
       });
       const savedPost = await newPost.save();
-      // Format timestamps to a readable format
       savedPost.createdAt = savedPost.createdAt.toLocaleString();
       savedPost.updatedAt = savedPost.updatedAt.toLocaleString();
       return savedPost;
@@ -87,11 +79,10 @@ const resolvers = {
         { new: true }
       );
       if (!updatedPost) {
-        throw new Error('Post not found')
+        throw new Error('Post not found');
       }
       return updatedPost;
     },
-    // delete post function 
     deletePost: async (_, { postId }) => {
       try {
         const deletedPost = await Post.findByIdAndDelete(postId);
@@ -100,33 +91,32 @@ const resolvers = {
           throw new Error('Post not found');
         }
 
-        return deletedPost; // Return the deleted post
+        return deletedPost;
       } catch (error) {
         console.error('Error deleting post:', error);
         throw new Error('Failed to delete post');
       }
     },
-    addComment: async (parent, { postId, text }, context) => {
+    createComment: async (_, { content, post }, context) => {
+      if (!context.user) {
+        throw new AuthenticationError('You must be logged in to make a comment!');
+      }
       try {
-        if (!context.user) {
-          throw new AuthenticationError('You must be logged in to add a comment!');
-        }
-        const newComment = new Comment({
-          content: text,
+        const comment = await Comment.create({
+          content,
           author: context.user._id,
-          post: postId,
+          post,
         });
-        const savedComment = await newComment.save();
-        return savedComment;
+        return comment;
       } catch (error) {
-        throw new Error('Failed to add comment');
+        throw new Error('Failed to create comment');
       }
     },
-    updateComment: async (parent, { id, text }, context) => {
+    updateComment: async (_, { id, content }, context) => {
       try {
         const updatedComment = await Comment.findByIdAndUpdate(
           id,
-          { text, updatedAt: new Date() }, // Set text and updatedAt fields
+          { content, updatedAt: new Date() },
           { new: true }
         );
 
@@ -139,144 +129,51 @@ const resolvers = {
         throw new Error('Failed to update comment');
       }
     },
-    deleteComment: async (parent, { id }, context) => {
+    deleteComment: async (_, { id }, context) => {
       try {
         await Comment.findByIdAndDelete(id);
-        return id;
+        return "Comment deleted successfully";
       } catch (error) {
         throw new Error('Failed to delete comment');
       }
     },
-    // addToWishlist: async (parent, { input }, context) => {
-    //   const { userId } = context.user;
-    //   const { gameId } = input;
-
-    //   try {
-    //     const game = await Game.findById(ObjectId(gameId));
-
-
-    //     if (!game) {
-    //       throw new Error('Game not found');
-    //     }
-
-    //     await User.findByIdAndUpdate(userId, { $push: { wishlist: game } });
-
-    //     return game;
-    //   } catch (error) {
-    //     console.error('Error adding to wishlist:', error);
-    //     throw new Error('Failed to add to wishlist');
-    //   }
-    // },
-    // addToWishlist: async (_, { input }, context) => {
-    //   // Ensure the user is logged in
-    //   if (context.user) {
-    //     const { userId } = context.user;
-    //     const { gameId } = input;
-    //     console.log(`Attempting to add game with ID: ${gameId}`);
-    //     try {
-    //       // Check if the game exists
-    //       const game = await gameSchema.findById(gameId);
-    //       if (!game) {
-    //         throw new Error('Game not found');
-    //       }
-
-    //       // Add the game to the user's wishlist
-    //       const updatedUser = await User.findByIdAndUpdate(
-    //         userId,
-    //         { $addToSet: { wishlist: ObjectId(game.id) } },
-    //         { new: true, runValidators: true }
-    //       );
-
-    //       return game; // Return the added game
-    //     } catch (error) {
-    //       console.error('Error adding to wishlist:', error);
-    //       throw new ApolloError('Failed to add to wishlist', 'ADD_TO_WISHLIST_ERROR');
-    //     }
-    //   } else {
-    //     throw new AuthenticationError('Not logged in');
-    //   }
-    // },
-
-    // addToWishlist: async (_, { input }, context) => {
-    //   // Ensure the user is logged in
-    //   if (context.user) {
-    //     const updatedUser = await User.findOneAndUpdate(
-    //       { _id: context.user._id },
-    //       { $addToSet: { wishlist: input } },
-    //       { new: true, runValidators: true }
-    //     );
-    //     return updatedUser;
-    //   }
-
-    //   throw new AuthenticationError('Not logged in');
-    // },
-    // addToWishlist: async (_, { input }, context) => {
-    //   // Ensure the user is logged in
-    //   if (context.user) {
-    //     // Check if the game already exists
-    //     let game = await Game.findById(input.gameId);
-
-    //     if (!game) {
-    //       // If not, create a new Game instance with the data from the input
-    //       game = new Game({
-    //         _id: input.gameId,
-    //         name: input.name,
-    //         image: input.image, // Make sure this matches the field name in the Game schema
-    //         platforms: input.platforms,
-    //         rating: input.rating,
-    //         releaseDate: input.releaseDate,
-    //       });
-    //       // Save the new game to the database
-    //       await game.save();
-    //     }
-
-    //     // Add the game to the user's wishlist
-    //     const updatedUser = await User.findOneAndUpdate(
-    //       { _id: context.user._id },
-    //       { $addToSet: { wishlist: game } }, // Add the game object
-    //       { new: true, runValidators: true }
-    //     );
-
-    //     return updatedUser;
-    //   }
-
-    //   throw new AuthenticationError('Not logged in');
-    // },
-
-    addToWishlist: async (parent, { gameData }, context) => {
-      if (context.user) {
-        const updatedUser = await User.findByIdAndUpdate(
-          { _id: context.user._id },
-          { $push: { wishlist: gameData } },
-          { new: true }
-        );
-
-        return updatedUser;
+    addToWishlist: async (_, { gameData }, context) => {
+      if (!context.user) {
+        throw new AuthenticationError('You must be logged in to add to wishlist!');
       }
+      
+      const updatedUser = await User.findByIdAndUpdate(
+        context.user._id,
+        { $push: { wishlist: gameData } },
+        { new: true }
+      );
 
-      throw AuthenticationError;
+      return updatedUser;
     },
-
-    addToCurrentlyPlaying: async (parent, { input }, context) => {
-      const { userId } = context.user;
-      const { gameId } = input;
-
-      try {
-        const game = await Game.findById(gameId);
-
-        if (!game) {
-          throw new Error('Game not found');
-        }
-
-        await User.findByIdAndUpdate(userId, {
-          $push: { currentlyPlaying: game },
-        });
-
-        return game;
-      } catch (error) {
-        console.error('Error adding to currently playing:', error);
-        throw new Error('Failed to add to currently playing');
+    addToCurrentlyPlaying: async (_, { input }, context) => {
+      if (!context.user) {
+        throw new AuthenticationError('You must be logged in to add to currently playing!');
       }
+      
+      const game = await Game.findById(input.gameId);
+
+      if (!game) {
+        throw new Error('Game not found');
+      }
+
+      await User.findByIdAndUpdate(context.user._id, {
+        $push: { currentlyPlaying: game },
+      });
+
+      return game;
+    },
+  },
+  Comment: {
+    author: async (comment) => {
+      return await User.findById(comment.author);
+    },
+    post: async (comment) => {
+      return await Post.findById(comment.post);
     },
   },
   Post: {

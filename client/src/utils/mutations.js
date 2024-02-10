@@ -75,15 +75,15 @@ export const CREATE_POST = gql`
   }
 `;
 
-export const ADD_COMMENT = gql`
-mutation AddComment($postId: ID!, $text: String!, $authorId: ID!) {
-  addComment(postId: $postId, text: $text, authorId: $authorId) {
-    content
-    createdAt
-    id
+export const CREATE_COMMENT = gql`
+mutation CreateComment($content: String!, $post: ID!) {
+  createComment(content: $content, post: $post) {
     author {
       _id
     }
+    content
+    createdAt
+    id
   }
 }
 `
