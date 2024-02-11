@@ -47,14 +47,19 @@ export const ADD_TO_WISHLIST = gql`
 `;
 
 export const ADD_TO_CURRENTLY_PLAYING = gql`
-  mutation AddToCurrentlyPlaying($gameId: ID!) {
-    addToCurrentlyPlaying(input: { gameId: $gameId }) {
+  mutation AddToCurrentlyPlaying($gameData: AddToCurrentlyPlayingInput!) {
+    addToCurrentlyPlaying(gameData: $gameData) {
       _id
-      name
-      image
-      platforms
-      rating
-      releaseDate
+      username
+      email
+      wishlist {
+        gameId
+        name
+        image
+        platforms
+        rating
+        releaseDate
+      }
       
     }
   }

@@ -5,6 +5,9 @@ import { faPlaystation, faXbox, faWindows } from '@fortawesome/free-brands-svg-i
 import { Link } from 'react-router-dom';
 import { ADD_TO_WISHLIST } from '../utils/mutations';
 import { ADD_TO_CURRENTLY_PLAYING } from '../utils/mutations';
+import { useQuery } from '@apollo/client';
+import { QUERY_ME } from '../utils/queries';
+import AuthService from '../utils/auth';
 
 
 
@@ -19,6 +22,23 @@ const ProfilePage = () => {
   const [searchResults, setSearchResults] = useState([]);
   const [wishlist, setWishlist] = useState([]); 
   const [currentlyPlaying, setCurrentlyPlaying] = useState([]);
+  const [userId, setUserId] = useState(null);
+  const [userData, setUserData] = useState(null);
+  const { loading, error, data } = useQuery(QUERY_ME);
+
+  
+
+  useEffect(() => {
+    if (data && data.me) {
+      setUserData(data.me);
+    }
+  }, [data]);
+  
+
+
+
+
+
 
   // API call for all games
   useEffect(() => {
@@ -62,9 +82,12 @@ const ProfilePage = () => {
   const getPlatformIcons = (platforms) => {
     // Check if platforms is defined and is an array
     if (Array.isArray(platforms)) {
-      return platforms.map((platform, index) => {
+      return platforms.map((platformData, index) => {
+        // Access the platform name from the nested object
+        const platformName = platformData.platform.name;
+  
         let icon = null;
-        switch (platform.name) {
+        switch (platformName) {
           case 'PlayStation':
             icon = <FontAwesomeIcon icon={faPlaystation} />;
             break;
@@ -83,25 +106,26 @@ const ProfilePage = () => {
     // Return an empty array or a default value if platforms is not an array
     return [];
   };
+  
   const [addToWishlist] = useMutation(ADD_TO_WISHLIST);
   
   const handleAddToWishlist = async (gameId) => {
     try {
       // Find the game object using the gameId
       const game = searchResults.find((game) => game.id === gameId);
-      console.log(game);
+      console.log(game.id);
       if (!game) {
         throw new Error('Game not found');
       }
-  
-      // Convert gameId to a string and map platforms to an array of strings
+      
       const input = {
         gameId: game.id.toString(), // Convert gameId to a string
         name: game.name,
         image: game.background_image,
-        platforms: game.platforms.map(platform => platform.name), // Map platforms to an array of strings
+        platforms: game.platforms.map(platform => platform.name), 
         rating: game.rating,
         releaseDate: game.released,
+        
       };
   
       // Call the addToWishlist mutation with the correct variable name
@@ -110,8 +134,11 @@ const ProfilePage = () => {
           gameData: input, // Use the correct variable name as defined in your GraphQL schema
         },
       });
+      
   
       setWishlist([...wishlist, data.addToWishlist]);
+      // setWishlist(prevState => [...prevState, data.addToWishlist]);
+
     } catch (error) {
       console.error('Error adding to wishlist:', error);
     }
@@ -122,21 +149,46 @@ const ProfilePage = () => {
 
   const handleAddToCurrentlyPlaying = async (gameId) => {
     try {
-      const { data } = await addToCurrentlyPlaying({ variables: { gameId } });
-      setCurrentlyPlaying([...currentlyPlaying, data.addToCurrentlyPlaying]);
+      // Find the game object using the gameId
+      const game = searchResults.find((game) => game.id === gameId);
+      console.log(game.id);
+      if (!game) {
+        throw new Error('Game not found');
+      }
+      
+      const input = {
+        gameId: game.id.toString(), // Convert gameId to a string
+        name: game.name,
+        image: game.background_image,
+        platforms: game.platforms.map(platform => platform.name), 
+        rating: game.rating,
+        releaseDate: game.released,
+        
+      };
+  
+      // Call the addToWishlist mutation with the correct variable name
+      const { data } = await addToCurrentlyPlaying({
+        variables: {
+          gameData: input, // Use the correct variable name as defined in your GraphQL schema
+        },
+      });
+      
+  
+      setWishlist([...currentlyPlaying, data.addToCurrentlyPlaying]);
+      // setWishlist(prevState => [...prevState, data.addToWishlist]);
+
     } catch (error) {
       console.error('Error adding to currently playing:', error);
     }
   };
   
-  
-  
+
 
   return (
     <div className='container'>
       <Navbar />
       <header className='my-4'>
-        <h1>Welcome, User!</h1>
+        <h1>Welcome, {}!</h1>
       </header>
 
       <div className='row'>
@@ -179,19 +231,19 @@ const ProfilePage = () => {
         <div className='container'>
         <div className='row'>
           {wishlist.map((game) => (
-            <div className='col-lg-3 col-md-6 col-sm-12' key={game.id}>
+            <div className='col-lg-3 col-md-6 col-sm-12' key={game._id}>
               <div className='item'>
                 <img
-                  src={game.background_image}
+                  src={game.image}
                   alt={game.name}
                   style={{ width: '100%', height: 'auto' }}
                 />
                 <h3>{game.name}</h3>
-                <p>{getPlatformIcons(game.parent_platforms)}</p>
+                <p>{getPlatformIcons(game.platforms)}</p>
                 <p> Rating: {game.rating}</p>
-                <p>Released: {game.released}</p>
-                <button onClick={() => handleAddToWishlist(game.id)}>Add to Wishlist</button>
-                <button onClick={() => handleAddToCurrentlyPlaying(game.id)}>Currently Playing</button>
+                <p>Released: {game.releaseDate}</p>
+                <button onClick={() => handleAddToWishlist()}>Add to Wishlist</button>
+                <button onClick={() => handleAddToCurrentlyPlaying()}>Currently Playing</button>
               </div>
             </div>
           ))}

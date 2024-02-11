@@ -4,11 +4,16 @@ const mongoose = require('mongoose');
 
 const resolvers = {
   Query: {
-    me: async (_, __, context) => {
+    // parent, args, then context
+    me: async (parent, args, context) => {
+
       if (context.user) {
-        return await User.findOne({ _id: context.user._id });
+        const userData = await User.findOne({ _id: context.user._id }).select('-__v -password');
+
+        return userData;
       }
-      throw new AuthenticationError('You must be logged in to view this information!');
+
+      throw AuthenticationError;
     },
     getPost: async (_, { postId }, context) => {
       if (!context.user) {
@@ -137,43 +142,38 @@ const resolvers = {
         throw new Error('Failed to delete comment');
       }
     },
-    addToWishlist: async (_, { gameData }, context) => {
-      if (!context.user) {
-        throw new AuthenticationError('You must be logged in to add to wishlist!');
-      }
-      
-      const updatedUser = await User.findByIdAndUpdate(
-        context.user._id,
-        { $push: { wishlist: gameData } },
-        { new: true }
-      );
+    addToWishlist: async (parent, { gameData }, context) => {
+      if (context.user) {
+        const updatedUser = await User.findByIdAndUpdate(
+          { _id: context.user._id },
+          { $push: { wishlist: gameData } },
+          { new: true }
+        );
 
-      return updatedUser;
+        return updatedUser;
+      }
     },
-    addToCurrentlyPlaying: async (_, { input }, context) => {
-      if (!context.user) {
-        throw new AuthenticationError('You must be logged in to add to currently playing!');
-      }
-      
-      const game = await Game.findById(input.gameId);
-
-      if (!game) {
-        throw new Error('Game not found');
-      }
-
-      await User.findByIdAndUpdate(context.user._id, {
-        $push: { currentlyPlaying: game },
-      });
-
-      return game;
-    },
-  },
   Comment: {
     author: async (comment) => {
       return await User.findById(comment.author);
     },
     post: async (comment) => {
       return await Post.findById(comment.post);
+    },
+
+    addToCurrentlyPlaying: async (parent, { gameData }, context) => {
+      if (context.user) {
+        const updatedUser = await User.findByIdAndUpdate(
+          { _id: context.user._id },
+          { $push: { currentlyPlaying: gameData } },
+          { new: true }
+        );
+
+        return updatedUser;
+      }
+
+      throw AuthenticationError;
+
     },
   },
   Post: {
