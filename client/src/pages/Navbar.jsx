@@ -21,26 +21,31 @@ const Navbar = () => {
     }, 3000); // Hide the notification after 3 seconds
   };
 
-useEffect(() => {
-  const handleClickOutside = (event) => {
-    if (
-      isOpen &&
-      menuRef.current &&
-      !menuRef.current.contains(event.target) &&
-      !event.target.classList.contains('menu-toggle')
-    ) {
-      setIsOpen(false);
-    }
-  };
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        isOpen &&
+        menuRef.current &&
+        !menuRef.current.contains(event.target) &&
+        !event.target.classList.contains('menu-toggle')
+      ) {
+        setIsOpen(false);
+      }
+    };
 
-  document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('mousedown', handleClickOutside);
 
-  return () => {
-    document.removeEventListener('mousedown', handleClickOutside);
-  };
-}, [isOpen]);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isOpen]);
+
   const toggleMenu = () => {
-    setIsOpen(prevState => !prevState); // Toggle isOpen
+    setIsOpen((prevState) => !prevState); // Toggle isOpen
+  };
+
+  const closeMenu = () => {
+    setIsOpen(false);
   };
 
   return (
@@ -52,9 +57,9 @@ useEffect(() => {
       </div>
       {isOpen && (
         <ul className="menu-items" ref={menuRef}>
-          <li><Link to="/">Home</Link></li>
-          <li><Link to="/profile">Profile</Link></li>
-          <li><Link to="/blog">Forum</Link></li>
+          <li><Link to="/" onClick={closeMenu}>Home</Link></li>
+          <li><Link to="/profile" onClick={closeMenu}>Profile</Link></li>
+          <li><Link to="/blog" onClick={closeMenu}>Forum</Link></li>
           {isLoggedIn && (
             <li><button onClick={handleLogout}>Logout</button></li>
           )}
