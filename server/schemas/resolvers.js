@@ -153,14 +153,6 @@ const resolvers = {
         return updatedUser;
       }
     },
-  Comment: {
-    author: async (comment) => {
-      return await User.findById(comment.author);
-    },
-    post: async (comment) => {
-      return await Post.findById(comment.post);
-    },
-
     addToCurrentlyPlaying: async (parent, { gameData }, context) => {
       if (context.user) {
         const updatedUser = await User.findByIdAndUpdate(
@@ -176,6 +168,14 @@ const resolvers = {
 
     },
   },
+  Comment: {
+    author: async (comment) => {
+      return await User.findById(comment.author);
+    },
+    post: async (comment) => {
+      return await Post.findById(comment.post);
+    },
+  },
   Post: {
     author: async (parent) => {
       return await User.findById(parent.author);
@@ -184,3 +184,4 @@ const resolvers = {
 };
 
 module.exports = resolvers;
+

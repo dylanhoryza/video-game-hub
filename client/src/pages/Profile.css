@@ -1,0 +1,108 @@
+.item {
+  
+  color: black;
+  border-radius: 10px;
+  position: relative;
+ background-color: rgb(167, 156, 184);
+  box-shadow: 0 0 10px #ff00ff; /* Neon pink box shadow */
+  animation: neonBorder 1.5s ease-in-out infinite alternate;
+  margin-bottom: 20px;
+}
+
+@keyframes neonBackground {
+  from {
+    background-color: #ca99f8; /* Start with white background */
+  }
+  to {
+    background-color: #ff00ff; /* End with neon color */
+  }
+}
+
+@keyframes neonBorder {
+  from {
+    box-shadow: 0 0 10px #fff; /* Start with white box shadow */
+  }
+  to {
+    box-shadow: 0 0 10px #ff00ff; /* End with neon pink box shadow */
+  }
+}
+
+.platforms {
+  text-align: center;
+}
+
+.rating-container, .released-container {
+  display: flex;
+  align-items: center;
+}
+
+.rating-label {
+  margin-right: 110px; 
+  margin-left: 25px;
+  font-weight: bold;
+  color: white;
+}
+
+
+.released-label {
+  margin-right: 60px; 
+  margin-left: 25px;
+  font-weight: bold;
+  color: white;
+}
+
+.game-name {
+  font-size: 25px;
+  margin-top: 5px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.button-container {
+  display: flex;
+  justify-content: center;
+}
+
+.wishlist-button,
+.currently-playing-button {
+  cursor: pointer;
+  margin-right: 10px;
+  width: 50px;
+}
+
+.wishlist-button {
+  width: 35px;
+}
+
+.game-image {
+  border-radius: 5px;
+  max-height: 168.75px;
+}
+
+
+
+.search-group {
+display: flex;
+align-items: center;
+
+
+
+
+}
+.search-bar {
+  width: 92%;
+  border-radius: 10px;
+  height: 35px;
+  
+}
+
+.search-button {
+  border-radius: 10px;
+  height: 35px;
+  width: 80px;
+  background-color: #ff00ff;
+  color: white;
+}
+
+
