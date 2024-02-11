@@ -21,24 +21,24 @@ const Navbar = () => {
     }, 3000); // Hide the notification after 3 seconds
   };
 
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (
-        isOpen &&
-        menuRef.current &&
-        !menuRef.current.contains(event.target) &&
-        !event.target.classList.contains('menu-toggle')
-      ) {
-        setIsOpen(false);
-      }
-    };
-  
-    document.addEventListener('mousedown', handleClickOutside);
-  
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [isOpen]);
+useEffect(() => {
+  const handleClickOutside = (event) => {
+    if (
+      isOpen &&
+      menuRef.current &&
+      !menuRef.current.contains(event.target) &&
+      !event.target.classList.contains('menu-toggle')
+    ) {
+      setIsOpen(false);
+    }
+  };
+
+  document.addEventListener('mousedown', handleClickOutside);
+
+  return () => {
+    document.removeEventListener('mousedown', handleClickOutside);
+  };
+}, [isOpen]);
   const toggleMenu = () => {
     setIsOpen(prevState => !prevState); // Toggle isOpen
   };
