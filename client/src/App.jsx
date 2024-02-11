@@ -5,7 +5,7 @@ import { ApolloClient, InMemoryCache, ApolloProvider, createHttpLink, HttpLink }
 import { setContext } from '@apollo/client/link/context' 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import HomePage from './pages/HomePage'
-
+import { FaGamepad } from "react-icons/fa";
 
 const httpLink = createHttpLink({ uri: '/graphql' })
 const authLink = setContext((_, { headers }) => {
@@ -25,14 +25,18 @@ const client = new ApolloClient({
 function App() {
   return (
     <>
-    <ApolloProvider client = { client }>
-    <div className='app-wrapper'>
-      <div className='app-container'>
-   
-    <Outlet />
-      </div>
-      
-    </div>
+      <ApolloProvider client={client}>
+        <div className='app-wrapper'>
+          <div className='app-container'>
+            <header className="app-header">
+              <div className="app-logo">
+                <FaGamepad />
+              </div>
+              <h1 className="app-title">VGH</h1>
+            </header>
+            <Outlet />
+          </div>
+        </div>
       </ApolloProvider>
     </>
   )
