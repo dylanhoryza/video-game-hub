@@ -11,11 +11,14 @@ const { ObjectId } = require('mongoose');
 const resolvers = {
   Query: {
     // parent, args, then context
-    me: async (_, __, context) => {
+    me: async (parent, args, context) => {
       if (context.user) {
-        return await User.findOne({ _id: context.user._id });
+        const userData = await User.findOne({ _id: context.user._id }).select('-__v -password');
+
+        return userData;
       }
-      throw new AuthenticationError('You must be logged in to view this information!');
+
+      throw AuthenticationError;
     },
     getPost: async (_, { postId }, context) => {
       if (!context.user) {
@@ -147,102 +150,6 @@ const resolvers = {
         throw new Error('Failed to delete comment');
       }
     },
-    // addToWishlist: async (parent, { input }, context) => {
-    //   const { userId } = context.user;
-    //   const { gameId } = input;
-
-    //   try {
-    //     const game = await Game.findById(ObjectId(gameId));
-
-
-    //     if (!game) {
-    //       throw new Error('Game not found');
-    //     }
-
-    //     await User.findByIdAndUpdate(userId, { $push: { wishlist: game } });
-
-    //     return game;
-    //   } catch (error) {
-    //     console.error('Error adding to wishlist:', error);
-    //     throw new Error('Failed to add to wishlist');
-    //   }
-    // },
-    // addToWishlist: async (_, { input }, context) => {
-    //   // Ensure the user is logged in
-    //   if (context.user) {
-    //     const { userId } = context.user;
-    //     const { gameId } = input;
-    //     console.log(`Attempting to add game with ID: ${gameId}`);
-    //     try {
-    //       // Check if the game exists
-    //       const game = await gameSchema.findById(gameId);
-    //       if (!game) {
-    //         throw new Error('Game not found');
-    //       }
-
-    //       // Add the game to the user's wishlist
-    //       const updatedUser = await User.findByIdAndUpdate(
-    //         userId,
-    //         { $addToSet: { wishlist: ObjectId(game.id) } },
-    //         { new: true, runValidators: true }
-    //       );
-
-    //       return game; // Return the added game
-    //     } catch (error) {
-    //       console.error('Error adding to wishlist:', error);
-    //       throw new ApolloError('Failed to add to wishlist', 'ADD_TO_WISHLIST_ERROR');
-    //     }
-    //   } else {
-    //     throw new AuthenticationError('Not logged in');
-    //   }
-    // },
-
-    // addToWishlist: async (_, { input }, context) => {
-    //   // Ensure the user is logged in
-    //   if (context.user) {
-    //     const updatedUser = await User.findOneAndUpdate(
-    //       { _id: context.user._id },
-    //       { $addToSet: { wishlist: input } },
-    //       { new: true, runValidators: true }
-    //     );
-    //     return updatedUser;
-    //   }
-
-    //   throw new AuthenticationError('Not logged in');
-    // },
-    // addToWishlist: async (_, { input }, context) => {
-    //   // Ensure the user is logged in
-    //   if (context.user) {
-    //     // Check if the game already exists
-    //     let game = await Game.findById(input.gameId);
-
-    //     if (!game) {
-    //       // If not, create a new Game instance with the data from the input
-    //       game = new Game({
-    //         _id: input.gameId,
-    //         name: input.name,
-    //         image: input.image, // Make sure this matches the field name in the Game schema
-    //         platforms: input.platforms,
-    //         rating: input.rating,
-    //         releaseDate: input.releaseDate,
-    //       });
-    //       // Save the new game to the database
-    //       await game.save();
-    //     }
-
-    //     // Add the game to the user's wishlist
-    //     const updatedUser = await User.findOneAndUpdate(
-    //       { _id: context.user._id },
-    //       { $addToSet: { wishlist: game } }, // Add the game object
-    //       { new: true, runValidators: true }
-    //     );
-
-    //     return updatedUser;
-    //   }
-
-    //   throw new AuthenticationError('Not logged in');
-    // },
-
     addToWishlist: async (parent, { gameData }, context) => {
       if (context.user) {
         const updatedUser = await User.findByIdAndUpdate(
@@ -257,26 +164,18 @@ const resolvers = {
       throw AuthenticationError;
     },
 
-    addToCurrentlyPlaying: async (parent, { input }, context) => {
-      const { userId } = context.user;
-      const { gameId } = input;
+    addToCurrentlyPlaying: async (parent, { gameData }, context) => {
+      if (context.user) {
+        const updatedUser = await User.findByIdAndUpdate(
+          { _id: context.user._id },
+          { $push: { currentlyPlaying: gameData } },
+          { new: true }
+        );
 
-      try {
-        const game = await Game.findById(gameId);
-
-        if (!game) {
-          throw new Error('Game not found');
-        }
-
-        await User.findByIdAndUpdate(userId, {
-          $push: { currentlyPlaying: game },
-        });
-
-        return game;
-      } catch (error) {
-        console.error('Error adding to currently playing:', error);
-        throw new Error('Failed to add to currently playing');
+        return updatedUser;
       }
+
+      throw AuthenticationError;
     },
   },
   Post: {

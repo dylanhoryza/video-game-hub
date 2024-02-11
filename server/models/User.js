@@ -33,12 +33,8 @@ const userSchema = new mongoose.Schema(
             ref: 'Review'
         }],
         wishlist: [gameSchema],
-        currentlyPlaying: [{
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Game'
-        }],
-        favoriteGames: [String]
-    },
+        currentlyPlaying: [gameSchema],
+       },
     {
         toJSON: {
             virtuals: true,

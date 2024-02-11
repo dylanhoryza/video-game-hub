@@ -7,6 +7,7 @@ type User {
     bio: String
     avatar: String
     followers: [User]
+    reviews: String
     wishlist: [Game]
     currentlyPlaying: [Game]
   }
@@ -17,10 +18,13 @@ type Auth {
 }
 
 type Query {
-    me: User
     getPost(postId: ID!): Post
-    getAllPosts: [Post!]!
-    comments(postId: ID!): [Comment]!
+    getAllPosts: [Post!]
+    comments(postId: ID!): [Comment]
+}
+
+type Query {
+  me: User
 }
 
 type Game {
@@ -43,7 +47,12 @@ type Game {
   }
   
   input AddToCurrentlyPlayingInput {
-    gameId: ID!
+    gameId: String!
+    name: String!
+    image: String
+    platforms: [String]
+    rating: Float
+    releaseDate: String
     
   }
 
@@ -68,7 +77,7 @@ type Mutation {
     addUser(username: String!, email: String!, password: String!): Auth
     login(email: String!, password: String!): Auth
     addToWishlist(gameData: AddToWishlistInput!): User
-    addToCurrentlyPlaying(input: AddToCurrentlyPlayingInput!): Game
+    addToCurrentlyPlaying(gameData: AddToCurrentlyPlayingInput!): User
     createPost(title: String!, content: String!): Post!
     deletePost(postId: ID!): Post
     updatePost(postId: ID!, content: String!): Post!
