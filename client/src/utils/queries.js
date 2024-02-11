@@ -58,18 +58,30 @@ query GetAllPosts {
   }
 }
 `
-export const GET_COMMENTS_BY_POST_ID = gql`
-  query GetCommentsByPostId($postId: ID!) {
-    comments(postId: $postId) {
-      id
-      content
-      createdAt
-      updatedAt
+export const GET_COMMENTS = gql`
+query GetComments($postId: ID!) {
+  comments(postId: $postId) {
+    author {
+      _id
+      email
+      username
+    }
+    content
+    createdAt
+    id
+    post {
+      _id
       author {
         _id
+        email
         username
       }
+      content
+      createdAt
+      title
     }
   }
+
+}
 `;
 

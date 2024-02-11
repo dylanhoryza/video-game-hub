@@ -69,11 +69,12 @@ type Game {
     id: ID!
     content: String!
     author: User!
+    post: Post!
     createdAt: String!
-    updatedAt: String
   }
 
-type Mutation {
+
+  type Mutation {
     addUser(username: String!, email: String!, password: String!): Auth
     login(email: String!, password: String!): Auth
     addToWishlist(gameData: AddToWishlistInput!): User
@@ -81,10 +82,10 @@ type Mutation {
     createPost(title: String!, content: String!): Post!
     deletePost(postId: ID!): Post
     updatePost(postId: ID!, content: String!): Post!
-    addComment(postId: ID!, text: String!, authorId: ID!): Comment!
-    updateComment(id: ID!, text: String!): Comment!
+    createComment(content: String!, post: ID!): Comment!
+    updateComment(content: String!, post: ID!): Comment!
     deleteComment(id: ID!): ID!
 }
-`;
+`
 
 module.exports = typeDefs;

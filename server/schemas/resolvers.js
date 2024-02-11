@@ -1,17 +1,12 @@
-const { User } = require('../models');
-const Game = require('../models');
-const { Post } = require('../models');
-const { Comment } = require('../models');
-const { Reaction } = require('../models');
-const { Notification } = require('../models');
+const { User, Game, Post, Comment } = require('../models');
 const { signToken, AuthenticationError } = require('../utils/auth.js');
 const mongoose = require('mongoose');
-const { ObjectId } = require('mongoose');
 
 const resolvers = {
   Query: {
     // parent, args, then context
     me: async (parent, args, context) => {
+
       if (context.user) {
         const userData = await User.findOne({ _id: context.user._id }).select('-__v -password');
 
@@ -32,7 +27,7 @@ const resolvers = {
       }
       return await Post.find();
     },
-    comments: async (parent, { postId }, context) => {
+    comments: async (_, { postId }, context) => {
       try {
         const comments = await Comment.find({ post: postId }).populate('author');
         return comments;
@@ -42,22 +37,22 @@ const resolvers = {
     },
   },
   Mutation: {
-    addUser: async (parent, { username, email, password }) => {
+    addUser: async (_, { username, email, password }) => {
       const user = await User.create({ username, email, password });
       const token = signToken(user);
       return { token, user };
     },
-    login: async (parent, { email, password }) => {
+    login: async (_, { email, password }) => {
       const user = await User.findOne({ email });
 
       if (!user) {
-        throw AuthenticationError('Invalid email or password');
+        throw new AuthenticationError('Invalid email or password');
       }
 
       const correctPw = await user.isCorrectPassword(password);
 
       if (!correctPw) {
-        throw AuthenticationError;
+        throw new AuthenticationError('Invalid email or password');
       }
 
       const token = signToken(user);
@@ -74,7 +69,6 @@ const resolvers = {
         author: context.user._id
       });
       const savedPost = await newPost.save();
-      // Format timestamps to a readable format
       savedPost.createdAt = savedPost.createdAt.toLocaleString();
       savedPost.updatedAt = savedPost.updatedAt.toLocaleString();
       return savedPost;
@@ -90,11 +84,10 @@ const resolvers = {
         { new: true }
       );
       if (!updatedPost) {
-        throw new Error('Post not found')
+        throw new Error('Post not found');
       }
       return updatedPost;
     },
-    // delete post function 
     deletePost: async (_, { postId }) => {
       try {
         const deletedPost = await Post.findByIdAndDelete(postId);
@@ -103,33 +96,32 @@ const resolvers = {
           throw new Error('Post not found');
         }
 
-        return deletedPost; // Return the deleted post
+        return deletedPost;
       } catch (error) {
         console.error('Error deleting post:', error);
         throw new Error('Failed to delete post');
       }
     },
-    addComment: async (parent, { postId, text }, context) => {
+    createComment: async (_, { content, post }, context) => {
+      if (!context.user) {
+        throw new AuthenticationError('You must be logged in to make a comment!');
+      }
       try {
-        if (!context.user) {
-          throw new AuthenticationError('You must be logged in to add a comment!');
-        }
-        const newComment = new Comment({
-          content: text,
+        const comment = await Comment.create({
+          content,
           author: context.user._id,
-          post: postId,
+          post,
         });
-        const savedComment = await newComment.save();
-        return savedComment;
+        return comment;
       } catch (error) {
-        throw new Error('Failed to add comment');
+        throw new Error('Failed to create comment');
       }
     },
-    updateComment: async (parent, { id, text }, context) => {
+    updateComment: async (_, { id, content }, context) => {
       try {
         const updatedComment = await Comment.findByIdAndUpdate(
           id,
-          { text, updatedAt: new Date() }, // Set text and updatedAt fields
+          { content, updatedAt: new Date() },
           { new: true }
         );
 
@@ -142,10 +134,10 @@ const resolvers = {
         throw new Error('Failed to update comment');
       }
     },
-    deleteComment: async (parent, { id }, context) => {
+    deleteComment: async (_, { id }, context) => {
       try {
         await Comment.findByIdAndDelete(id);
-        return id;
+        return "Comment deleted successfully";
       } catch (error) {
         throw new Error('Failed to delete comment');
       }
@@ -160,8 +152,13 @@ const resolvers = {
 
         return updatedUser;
       }
-
-      throw AuthenticationError;
+    },
+  Comment: {
+    author: async (comment) => {
+      return await User.findById(comment.author);
+    },
+    post: async (comment) => {
+      return await Post.findById(comment.post);
     },
 
     addToCurrentlyPlaying: async (parent, { gameData }, context) => {
@@ -176,6 +173,7 @@ const resolvers = {
       }
 
       throw AuthenticationError;
+
     },
   },
   Post: {

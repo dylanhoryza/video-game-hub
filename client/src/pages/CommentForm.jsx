@@ -1,20 +1,20 @@
 import React, { useState } from 'react';
-import { useMutation, useQuery } from '@apollo/client';
-import { ADD_COMMENT } from '../utils/mutations'; 
-import { GET_COMMENTS_BY_POST_ID } from '../utils/queries'; 
+import { useMutation } from '@apollo/client';
+import { CREATE_COMMENT } from '../utils/mutations';
+import { GET_COMMENTS } from '../utils/queries';
 
 // comment form for comments 
-const CommentForm = ({ postId, authorId }) => {
+const CommentForm = ({ postId }) => {
     const [text, setText] = useState('');
 
-    const [addComment, { loading, error }] = useMutation(ADD_COMMENT, {
+    const [addComment, { loading, error }] = useMutation(CREATE_COMMENT, {
         onCompleted: () => {
             setText('');
         },
         onError: (error) => {
             console.error('Error adding comment:', error);
         },
-        refetchQueries: [{ query: GET_COMMENTS_BY_POST_ID, variables: { postId } }],
+        refetchQueries: [{ query: GET_COMMENTS, variables: { postId } }],
     });
     // handle form changes 
     const handleInputChange = (e) => {
@@ -23,8 +23,10 @@ const CommentForm = ({ postId, authorId }) => {
     // comment submit handler 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        console.log('postId:', postId);
+        console.log('text:', text);
         try {
-            await addComment({ variables: { postId, text, authorId } });
+            await addComment({ variables: { content: text, post: postId } });
         } catch (error) {
             console.error('Error adding comment:', error);
         }
