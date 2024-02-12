@@ -20,7 +20,9 @@ type Auth {
 type Query {
     getPost(postId: ID!): Post
     getAllPosts: [Post!]
+    getMyPost: [Post!] 
     comments(postId: ID!): [Comment]
+    me: User
 }
 
 type Query {

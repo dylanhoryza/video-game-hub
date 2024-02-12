@@ -20,6 +20,22 @@ export const GET_USER_BY_ID = gql`
   }
 `;
 
+export const GET_POST_BY_ID = gql`
+  query GetPostById($postId: ID!) {
+    getPost(postId: $postId) {
+      _id
+      title
+      content
+      author {
+        _id
+        username
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+
 export const QUERY_ME = gql`
 {
   me {
@@ -58,6 +74,23 @@ query GetAllPosts {
   }
 }
 `
+
+export const GET_USER_POSTS = gql`
+query GetMyPost {
+  getMyPost {
+    _id
+    author {
+      _id
+      email
+      username
+    }
+    content
+    createdAt
+    title
+  }
+}
+`
+
 export const GET_COMMENTS = gql`
 query GetComments($postId: ID!) {
   comments(postId: $postId) {
