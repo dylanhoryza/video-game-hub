@@ -3,8 +3,6 @@ import { Link } from 'react-router-dom';
 import { useQuery } from '@apollo/client';
 import { GET_ALL_POSTS } from '../utils/queries';
 import Navbar from './Navbar';
-import Comments from './Comments';
-import CommentForm from './CommentForm';
 import Button from '@mui/material/Button';
 
 const ForumPage = () => {
@@ -20,7 +18,12 @@ const ForumPage = () => {
     return (
         <div>
             <Navbar />
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px' }}>
+            <div style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                padding: '10px'
+            }}>
                 <Button
                     component={Link}
                     to='/create-post'
@@ -28,7 +31,11 @@ const ForumPage = () => {
                 >
                     Create a Post
                 </Button>
-                <h2 className='video-game-forum-top' style={{ textAlign: 'center', margin: '0 auto' }}>Video Game Forum</h2>
+                <h2 className='video-game-forum-top' style={{
+                    textAlign: 'center',
+                    margin: '0 auto'
+                }}>
+                    Video Game Forum</h2>
                 <Button
                     component={Link}
                     to='/user-posts'
@@ -47,7 +54,8 @@ const ForumPage = () => {
                             <p className='post-content'>{post.content}</p>
                             <p className="author">Author: {post.author.username}</p>
                             <p className="created-at">Created At: {new Date(parseInt(post.createdAt)).toLocaleDateString()}</p>
-                            <Button component={Link} to={`/solo-thread/${post._id}`}>View Thread</Button>
+                            {/* needs proper pathing, made a successful backend query for solo post and added it to front end */}
+                            <Button>View Thread</Button> 
                         </div>
                     ))}
                 </div>

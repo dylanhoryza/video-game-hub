@@ -7,8 +7,12 @@ const Comments = ({ postId }) => {
         variables: { postId },
     });
 
-    if (loading) return <p>Loading comments...</p>;
-    if (error) return <p>Error: {error.message}</p>;
+    if (loading) {
+        return <p>Loading comments...</p>;
+    }
+    if (error) {
+        return <p>Error: {error.message}</p>;
+    }
 
     // Assuming the query is named 'comments' in your typeDefs
     // const comments = data?.comments;

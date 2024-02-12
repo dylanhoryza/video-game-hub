@@ -23,6 +23,7 @@ const UserPostPage = () => {
         },
     });
 
+    // CTRL ALT DLt
     const handleDelete = async (postId) => {
         try {
             // Call the deletePost mutation
@@ -53,7 +54,7 @@ const UserPostPage = () => {
                         <h2 className='post-title'>{post.title}</h2>
                         <p className='post-content'>{post.content}</p>
                         <p className='author'>Author: {post.author.username}</p>
-                        <p className='created-at'>Created At: {post.createdAt}</p>
+                        <p className='created-at'>Created At: {new Date(parseInt(post.createdAt)).toLocaleDateString()}</p>
                         <div className='button-group'>
                             <Button className='post-update-button'>Update</Button>
                             <Button className='post-delete-button' onClick={() => handleDelete(post._id)}>Delete</Button>

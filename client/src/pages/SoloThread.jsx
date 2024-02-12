@@ -1,7 +1,7 @@
 import React from 'react';
 
-const soloThread = () => {
+const SoloThread = () => {
 
 }
 
-export default soloThread;
+export default SoloThread;
