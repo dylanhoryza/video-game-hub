@@ -1,13 +1,19 @@
-.forum-header {
-    text-align: center;
+.threads-header {
+  text-align: center;
+}
+
+.video-game-forum-top {
+  margin-top: 25px;
 }
 
 .post {
-    margin-bottom: 20px; 
+    margin: 50px;
     padding: 15px; 
+    width:80vh;
     border: 1px solid #ddd; 
     border-radius: 8px; 
     text-align: center;
+    background-color: rgb(51, 51, 53);
   }
   
   h3 {
@@ -32,4 +38,8 @@
     font-size: 14px;
     color: #999;
   }
-  
+   
+  .forum-card-container {
+    display: flex;
+    justify-content: center;
+  }

@@ -1,98 +1,59 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
-import { useQuery, useMutation } from '@apollo/client';
+import { useQuery } from '@apollo/client';
 import { GET_ALL_POSTS } from '../utils/queries';
-import { CREATE_POST } from '../utils/mutations'; 
 import Navbar from './Navbar';
-import Comments from './Comments'; 
+import Comments from './Comments';
 import CommentForm from './CommentForm';
+import Button from '@mui/material/Button';
 
-const BlogPage = () => {
-    const [newPost, setNewPost] = useState({ title: '', content: '' });
-
-    const handleInputChange = (e) => {
-        setNewPost({
-            ...newPost,
-            [e.target.name]: e.target.value,
-        });
-    };
-
+const ForumPage = () => {
     const { loading, error, data } = useQuery(GET_ALL_POSTS);
-    const [createPost] = useMutation(CREATE_POST, {
-        refetchQueries: [{ query: GET_ALL_POSTS }],
-    });
 
-    // grab auth useEffect possibly for user id to pass that value as the id 
-    // save blogs to user
-    const handleAddPost = async (e) => {
-        e.preventDefault();
-        try {
-            await createPost({
-                variables: {
-                    title: newPost.title,
-                    content: newPost.content,
-                },
-            });
-            // Reset form field after successful submission
-            setNewPost({ title: '', content: '' });
-        } catch (error) {
-            console.error('Error adding post:', error);
-        }
-    };
+    if (loading) {
+        return <p>Loading...</p>;
+    }
+    if (error) {
+        return <p>Error: {error.message}</p>;
+    }
 
-    if (loading) return <p>Loading...</p>;
-    if (error) return <p>Error: {error.message}</p>;
-
-    return ( 
+    return (
         <div>
             <Navbar />
-            <header className='forum-header'>
-                <h2>Video Game Forum</h2>
-                <Link to='/profile'>To Home</Link>
-            </header>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px' }}>
+                <Button
+                    component={Link}
+                    to='/create-post'
+                    variant="contained"
+                >
+                    Create a Post
+                </Button>
+                <h2 className='video-game-forum-top' style={{ textAlign: 'center', margin: '0 auto' }}>Video Game Forum</h2>
+                <Button
+                    component={Link}
+                    to='/user-posts'
+                    variant="contained"
+                >
+                    View My Threads
+                </Button>
+            </div>
 
-            <section className="forum-card">
-                <h3>Posts</h3>
-                
-                {data.getAllPosts.map(post => (
-                    <div className="post" key={post._id}>
-                        <h2>{post.title}</h2>
-                        <p>{post.content}</p>
-                        <p className="author">Author: {post.author.username}</p>
-                        <p className="created-at">{post.updatedAt ? `Updated At: ${new Date(parseInt(post.createdAt)).toLocaleString()}` : `Created At: ${new Date(parseInt(post.createdAt)).toLocaleString()}`}</p>
-                        <div className="comments">
-                            <CommentForm postId={post._id} />
-                            <Comments postId={post._id} /> 
+            <div className='forum-card-container'>
+                <div className="forum-card">
+                    <h1 className='threads-header'>Threads</h1>
+                    {data.getAllPosts.map(post => (
+                        <div className="post" key={post._id}>
+                            <h2 className='post-title'>{post.title}</h2>
+                            <p className='post-content'>{post.content}</p>
+                            <p className="author">Author: {post.author.username}</p>
+                            <p className="created-at">Created At: {new Date(parseInt(post.createdAt)).toLocaleDateString()}</p>
+                            <Button component={Link} to={`/solo-thread/${post._id}`}>View Thread</Button>
                         </div>
-                    </div>
-                ))}
-            </section>
-
-            <section>
-                <h3>Create a Post</h3>
-                <form onSubmit={handleAddPost}>
-                    <label>Title:
-                        <input
-                            type='text'
-                            name='title'
-                            value={newPost.title}
-                            onChange={handleInputChange}
-                        />
-                    </label>
-                    <br />
-                    <label>Content:
-                        <textarea
-                            name='content'
-                            value={newPost.content}
-                            onChange={handleInputChange}
-                        />
-                    </label>
-                    <br />
-                    <button type='submit'>Add Post</button>
-                </form>
-            </section>
+                    ))}
+                </div>
+            </div>
         </div>
     );
 };
 
-export default BlogPage;
+export default ForumPage;

@@ -15,6 +15,13 @@ const resolvers = {
 
       throw AuthenticationError;
     },
+    getMyPost: async (_, __, context) => {
+      if (!context.user) {
+        throw new AuthenticationError('You must be logged in to view your posts!');
+      } 
+      return await Post.find({ author: context.user._id });
+    },
+  
     getPost: async (_, { postId }, context) => {
       if (!context.user) {
         throw new AuthenticationError('You must be logged in to view this post!');

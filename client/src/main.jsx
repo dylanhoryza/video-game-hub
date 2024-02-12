@@ -9,6 +9,9 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import HomePage from './pages/HomePage.jsx';
 import ProfilePage from './pages/profilePage.jsx';
 import BlogPage from './pages/BlogPage.jsx'; // list path here 
+import CreatePostPage from './pages/CreatePostPage.jsx';
+import UserPostsPage from './pages/UserPosts.jsx';
+import SoloThread from './pages/SoloThread.jsx';
 
 const router = createBrowserRouter([
   {
@@ -27,11 +30,23 @@ const router = createBrowserRouter([
       {
         path: '/blog',
         element: <BlogPage />
+      },
+      {
+        path: '/create-post',
+        element: <CreatePostPage />
+      },
+      {
+        path: '/user-posts',
+        element: <UserPostsPage />
+      },
+      {
+        path: '/solo-thread',
+        element: <SoloThread />
       }
     ]
   }
 ])
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <RouterProvider router={router}/>
+  <RouterProvider router={router} />
 )

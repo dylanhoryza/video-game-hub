@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useMutation } from '@apollo/client';
 import { CREATE_COMMENT } from '../utils/mutations';
 import { GET_COMMENTS } from '../utils/queries';
+import Button from '@mui/material/Button';
 
 // comment form for comments 
 const CommentForm = ({ postId }) => {
@@ -42,7 +43,7 @@ const CommentForm = ({ postId }) => {
                 />
             </label>
             <br />
-            <button type='submit' disabled={loading}>Add Comment</button>
+            <Button type='submit' variant="contained" color="primary" disabled={loading}>Add Comment</Button>
             {error && <p>Error: {error.message}</p>}
         </form>
     );
