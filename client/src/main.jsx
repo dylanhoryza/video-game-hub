@@ -12,6 +12,7 @@ import BlogPage from './pages/BlogPage.jsx'; // list path here
 import CreatePostPage from './pages/CreatePostPage.jsx';
 import UserPostsPage from './pages/UserPosts.jsx';
 import SoloThread from './pages/SoloThread.jsx';
+import NewsPage from './pages/NewsPage.jsx';
 
 const router = createBrowserRouter([
   {
@@ -42,7 +43,11 @@ const router = createBrowserRouter([
       {
         path: '/solo-thread/:postId',
         element: <SoloThread />
-      }
+      },
+      {
+        path: '/news',
+        element: <NewsPage />
+      },
     ]
   }
 ])
