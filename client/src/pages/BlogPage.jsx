@@ -7,6 +7,7 @@ import Button from '@mui/material/Button';
 
 const ForumPage = () => {
     const { loading, error, data } = useQuery(GET_ALL_POSTS);
+    const posts = data?.getAllPosts;
 
     if (loading) {
         return <p>Loading...</p>;
@@ -48,14 +49,14 @@ const ForumPage = () => {
             <div className='forum-card-container'>
                 <div className="forum-card">
                     <h1 className='threads-header'>Threads</h1>
-                    {data.getAllPosts.map(post => (
+                    {posts.map(post => (
                         <div className="post" key={post._id}>
                             <h2 className='post-title'>{post.title}</h2>
                             <p className='post-content'>{post.content}</p>
                             <p className="author">Author: {post.author.username}</p>
                             <p className="created-at">Created At: {new Date(parseInt(post.createdAt)).toLocaleDateString()}</p>
                             {/* needs proper pathing, made a successful backend query for solo post and added it to front end */}
-                            <Button>View Thread</Button> 
+                            <Button component={Link} to={`/solo-thread/${post._id}`}>View Thread</Button>
                         </div>
                     ))}
                 </div>
