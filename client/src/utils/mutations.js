@@ -106,3 +106,14 @@ mutation DeleteComment($deleteCommentId: ID!) {
   deleteComment(id: $deleteCommentId)
 }
 `
+
+export const UPDATE_COMMENT = gql`
+mutation UpdateComment($id: ID!, $content: String!) {
+  updateComment(id: $id, content: $content) {
+    id
+    content
+    createdAt
+    updatedAt
+  }
+}
+`
