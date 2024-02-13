@@ -1,4 +1,4 @@
-/* NewsPage.css */
+
 
 .container {
   max-width: 800px;
@@ -45,6 +45,10 @@
 .news-feed {
   margin-bottom: 20px;
   margin-top: 20px;
+ box-shadow: 0 0 10px #13b587; /* Neon pink box shadow */
+  animation: neonBorder 1.5s ease-in-out infinite alternate;
+ border-radius: 10px;
+ text-align: center;
 }
 
 .description-item {

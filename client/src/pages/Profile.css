@@ -40,7 +40,7 @@
   margin-right: 110px; 
   margin-left: 25px;
   font-weight: bold;
-  color: white;
+  color: black;
 }
 
 
@@ -48,7 +48,7 @@
   margin-right: 60px; 
   margin-left: 25px;
   font-weight: bold;
-  color: white;
+  color: black;
 }
 
 .game-name {
@@ -57,6 +57,8 @@
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+  color: white;
+  
 }
 
 .button-container {
@@ -103,7 +105,7 @@ align-items: center;
   border-radius: 10px;
   height: 35px;
   width: 80px;
-  background-color: #ff00ff;
+  background-color: rgb(167, 156, 184);
   color: white;
   cursor: pointer; /* Add pointer cursor */
   margin-left: 10px; /* Add some space between input and button */
@@ -114,4 +116,43 @@ align-items: center;
   background-color: #cc00cc; /* Change background color on hover/focus */
 }
 
+.currently-playing-title, .wishlist-title {
+ background-color: #04E8AD;
+ box-shadow: 0 0 10px #13b587; /* Neon pink box shadow */
+  animation: neonBorder 1.5s ease-in-out infinite alternate;
+ border-radius: 10px;
+ color: black;
+ font-style: italic;
+ 
+}
+
+.currently-playing-title {
+  width: 350px;
+  padding-left: 10px;
+  margin-bottom: 20px;
+}
+
+.wishlist-title {
+  width: 190px;
+  padding-left: 10px;
+  margin-bottom: 20px;
+}
+
+.icon-image {
+  width: 50px;
+  margin-left: 5px;
+}
+
+.icon-image-2 {
+  width: 45px;
+  margin-left: 10px;
+}
+
+.username-title {
+  box-shadow: 0 0 10px #13b587; /* Neon pink box shadow */
+  animation: neonBorder 1.5s ease-in-out infinite alternate;
+  width: 340px;
+  border-radius: 10px;
+  padding-left: 5px;
+}
 
