@@ -40,25 +40,50 @@ export const QUERY_ME = gql`
 {
   me {
     _id
-    username
     email
-    bio
-    avatar
-    followers
-    reviews
+    username
     wishlist {
-      _id
-      name
       gameId
+      name
       image
       platforms
       rating
       releaseDate
     }
-    currentlyplaying
+    currentlyPlaying {
+      gameId
+      name
+      image
+      platforms
+      rating
+      releaseDate
+    }
   }
 }
 `
+// export const QUERY_ME = gql`
+// {
+//   me {
+//     _id
+//     username
+//     email
+//     bio
+//     avatar
+//     followers
+//     reviews
+//     wishlist {
+//       _id
+//       name
+//       gameId
+//       image
+//       platforms
+//       rating
+//       releaseDate
+//     }
+//     currentlyplaying
+//   }
+// }
+// `
 
 export const GET_ALL_POSTS = gql`
 query GetAllPosts {
