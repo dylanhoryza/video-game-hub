@@ -8,7 +8,7 @@ const NewsPage = () => {
   const [articles, setArticles] = useState([]);
   useEffect(() => {
     const getAllNews = async () => {
-      const apiURL = `https://newsapi.org/v2/everything?q=gaming&from=2024-01-13&sortBy=popularity&apiKey=d959c631bba34cff9967acb676b101bf`;
+      const apiURL = `https://newsapi.org/v2/everything?q=gaming&from=2024-01-13&sortBy=popularity&pageSize=10&apiKey=d959c631bba34cff9967acb676b101bf`;
 
       try {
         const response = await fetch(apiURL);

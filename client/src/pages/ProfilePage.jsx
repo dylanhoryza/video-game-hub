@@ -8,7 +8,11 @@ import {
 } from '@fortawesome/free-brands-svg-icons';
 import { Link } from 'react-router-dom';
 import { ADD_TO_WISHLIST } from '../utils/mutations';
-import { ADD_TO_CURRENTLY_PLAYING, REMOVE_FROM_CURRENTLY_PLAYING, REMOVE_FROM_WISHLIST } from '../utils/mutations';
+import {
+  ADD_TO_CURRENTLY_PLAYING,
+  REMOVE_FROM_CURRENTLY_PLAYING,
+  REMOVE_FROM_WISHLIST,
+} from '../utils/mutations';
 import { useQuery } from '@apollo/client';
 import { QUERY_ME } from '../utils/queries';
 import AuthService from '../utils/auth';
@@ -19,7 +23,6 @@ import Navbar from './Navbar';
 import wishlistIcon from '../assets/gift-solid.svg';
 import currentlyPlayingIcon from '../assets/gamepad-solid.svg';
 
-
 // Profile page function
 const ProfilePage = () => {
   const [searchGames, setSearchedGames] = useState('');
@@ -28,9 +31,9 @@ const ProfilePage = () => {
   const [currentlyPlaying, setCurrentlyPlaying] = useState([]);
   const [userId, setUserId] = useState(null);
   // const [userData, setUserData] = useState(null);
-  console.log(QUERY_ME)
+  console.log(QUERY_ME);
   const { loading, data } = useQuery(QUERY_ME);
-  console.log(data)
+  console.log(data);
   const userData = data?.me || {};
 
   // useEffect(() => {
@@ -129,7 +132,7 @@ const ProfilePage = () => {
       // Call the addToWishlist mutation with the correct variable name
       const { data } = await addToWishlist({
         variables: {
-          gameData: input, 
+          gameData: input,
         },
       });
 
@@ -163,7 +166,7 @@ const ProfilePage = () => {
       // Call the addToWishlist mutation with the correct variable name
       const { data } = await addToCurrentlyPlaying({
         variables: {
-          gameData: input, 
+          gameData: input,
         },
       });
 
@@ -174,57 +177,56 @@ const ProfilePage = () => {
     }
   };
 
-   // Function to handle removing a game from the wishlist
-   const [removeFromWishlist] = useMutation(REMOVE_FROM_WISHLIST);
-   const handleRemoveFromWishlist = async (gameId) => {
-     try {
-       const { data } = await removeFromWishlist({
-         variables: { gameId },
-       });
-       setWishlist(data.deleteFromWishlist.wishlist);
-     } catch (error) {
-       console.error('Error removing from wishlist:', error);
-     }
-   };
- 
-   // Function to handle removing a game from currently playing list
-   const [removeFromCurrentlyPlaying] = useMutation(REMOVE_FROM_CURRENTLY_PLAYING);
-   const handleRemoveFromCurrentlyPlaying = async (gameId) => {
-     try {
-       const { data } = await removeFromCurrentlyPlaying({
-         variables: { gameId },
-       });
+  // Function to handle removing a game from the wishlist
+  const [removeFromWishlist] = useMutation(REMOVE_FROM_WISHLIST);
+  const handleRemoveFromWishlist = async (gameId) => {
+    try {
+      const { data } = await removeFromWishlist({
+        variables: { gameId },
+      });
+      setWishlist(data.deleteFromWishlist.wishlist);
+    } catch (error) {
+      console.error('Error removing from wishlist:', error);
+    }
+  };
+
+  // Function to handle removing a game from currently playing list
+  const [removeFromCurrentlyPlaying] = useMutation(
+    REMOVE_FROM_CURRENTLY_PLAYING
+  );
+  const handleRemoveFromCurrentlyPlaying = async (gameId) => {
+    try {
+      const { data } = await removeFromCurrentlyPlaying({
+        variables: { gameId },
+      });
       //  setCurrentlyPlaying(data.deleteFromCurrentlyPlaying.currentlyPlaying);
       removeFromCurrentlyPlaying(gameId);
-     } catch (error) {
-       console.error('Error removing from currently playing:', error);
-     }
-   };
-
-
+    } catch (error) {
+      console.error('Error removing from currently playing:', error);
+    }
+  };
 
   return (
     <div className='container'>
       <Navbar />
       <header className='my-4'>
-        <h1>Welcome, {userData.username}!</h1>
+        <h1 className='username-title'>Welcome, {userData.username}!</h1>
       </header>
-      
+
       <div className='row'>
-        <div className='col-md-4'>
-          {/* Profile Pic */}
-          <img
-            src='https://via.placeholder.com/150' // Replace with the actual URL of the profile picture
-            alt='Profile'
-            className='img-fluid rounded-circle mb-3'
-          />
-        </div>
-        <div className='col-md-8'>
-          <h2>Currently Playing:</h2>
+        <div className='my-4'>
+          <h2 className='currently-playing-title'>
+          Currently Playing
+            <span className='icon'>
+              <img className='icon-image' src={currentlyPlayingIcon} alt='Icon' />
+            </span>
+            
+          </h2>
+
           <div className='container'>
             <div className='row'>
               {userData.currentlyPlaying?.map((game) => (
-                <div className='col-lg-7 col-md-6 col-sm-12' key={game.gameId}>
+                <div className='col-lg-5 col-md-8 col-sm-12' key={game.gameId}>
                   <div className='item'>
                     <div className='image-container'>
                       <img
@@ -257,7 +259,9 @@ const ProfilePage = () => {
                           <img
                             src={currentlyPlayingIcon}
                             alt='Currently Playing'
-                            onClick={() => handleRemoveFromCurrentlyPlaying(game.game_id)}
+                            onClick={() =>
+                              handleRemoveFromCurrentlyPlaying(game.game_id)
+                            }
                             className='currently-playing-button'
                             style={{ cursor: 'pointer' }}
                           />
@@ -273,7 +277,13 @@ const ProfilePage = () => {
       </div>
 
       <section className='my-4'>
-        <h2>Wishlist</h2>
+      <h2 className='wishlist-title'>
+           Wishlist
+            <span className='icon'>
+              <img className='icon-image-2' src={wishlistIcon} alt='Icon' />
+            </span>
+            
+          </h2>
         <div className='container'>
           <div className='row'>
             {userData.wishlist?.map((game) => (
