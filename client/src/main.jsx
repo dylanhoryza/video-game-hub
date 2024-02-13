@@ -40,7 +40,7 @@ const router = createBrowserRouter([
         element: <UserPostsPage />
       },
       {
-        path: '/solo-thread',
+        path: '/solo-thread/:postId',
         element: <SoloThread />
       }
     ]
