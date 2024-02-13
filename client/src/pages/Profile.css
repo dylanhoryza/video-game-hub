@@ -84,25 +84,34 @@
 
 .search-group {
 display: flex;
+justify-content: center; /* Center items horizontally */
+margin-bottom: 20px;
+margin-top: 50px;
 align-items: center;
-
-
-
-
 }
+
+
 .search-bar {
-  width: 92%;
   border-radius: 10px;
   height: 35px;
+  width: 300px;
   
 }
 
 .search-button {
+  border: none; /* Remove border */
   border-radius: 10px;
   height: 35px;
   width: 80px;
   background-color: #ff00ff;
   color: white;
+  cursor: pointer; /* Add pointer cursor */
+  margin-left: 10px; /* Add some space between input and button */
+}
+
+.search-button:hover,
+.search-button:focus {
+  background-color: #cc00cc; /* Change background color on hover/focus */
 }
 
 
