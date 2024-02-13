@@ -7,7 +7,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
 import HomePage from './pages/HomePage.jsx';
-import ProfilePage from './pages/profilePage.jsx';
+import ProfilePage from './pages/ProfilePage.jsx';
 import BlogPage from './pages/BlogPage.jsx'; // list path here 
 import CreatePostPage from './pages/CreatePostPage.jsx';
 import UserPostsPage from './pages/UserPosts.jsx';
