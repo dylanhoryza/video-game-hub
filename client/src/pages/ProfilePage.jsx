@@ -8,7 +8,7 @@ import {
 } from '@fortawesome/free-brands-svg-icons';
 import { Link } from 'react-router-dom';
 import { ADD_TO_WISHLIST } from '../utils/mutations';
-import { ADD_TO_CURRENTLY_PLAYING } from '../utils/mutations';
+import { ADD_TO_CURRENTLY_PLAYING, REMOVE_FROM_CURRENTLY_PLAYING, REMOVE_FROM_WISHLIST } from '../utils/mutations';
 import { useQuery } from '@apollo/client';
 import { QUERY_ME } from '../utils/queries';
 import AuthService from '../utils/auth';
@@ -171,6 +171,32 @@ const ProfilePage = () => {
     }
   };
 
+   // Function to handle removing a game from the wishlist
+   const [removeFromWishlist] = useMutation(REMOVE_FROM_WISHLIST);
+   const handleRemoveFromWishlist = async (gameId) => {
+     try {
+       const { data } = await removeFromWishlist({
+         variables: { gameId },
+       });
+       setWishlist(data.deleteFromWishlist.wishlist);
+     } catch (error) {
+       console.error('Error removing from wishlist:', error);
+     }
+   };
+ 
+   // Function to handle removing a game from currently playing list
+   const [removeFromCurrentlyPlaying] = useMutation(REMOVE_FROM_CURRENTLY_PLAYING);
+   const handleRemoveFromCurrentlyPlaying = async (gameId) => {
+     try {
+       const { data } = await removeFromCurrentlyPlaying({
+         variables: { gameId },
+       });
+       setCurrentlyPlaying(data.deleteFromCurrentlyPlaying.currentlyPlaying);
+     } catch (error) {
+       console.error('Error removing from currently playing:', error);
+     }
+   };
+
 
 
   return (
@@ -227,7 +253,7 @@ const ProfilePage = () => {
                           <img
                             src={currentlyPlayingIcon}
                             alt='Currently Playing'
-                            onClick={() => handleAddToCurrentlyPlaying(game.id)}
+                            onClick={() => handleRemoveFromCurrentlyPlaying(game.gameId)}
                             className='currently-playing-button'
                             style={{ cursor: 'pointer' }}
                           />
@@ -273,7 +299,7 @@ const ProfilePage = () => {
                         <img
                           src={wishlistIcon}
                           alt='Add to Wishlist'
-                          onClick={() => handleAddToWishlist(game.id)}
+                          onClick={() => handleRemoveFromWishlist(game.id)}
                           className='wishlist-button'
                           style={{ cursor: 'pointer' }}
                         />
