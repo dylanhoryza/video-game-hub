@@ -88,6 +88,8 @@ type Game {
     createComment(content: String!, post: ID!): Comment!
     updateComment(id: ID!, content: String!): Comment!
     deleteComment(id: ID!): ID!
+    deleteFromWishlist(gameId: ID!): User
+    deleteFromCurrentlyPlaying(gameId: ID!): User
 }
 `
 

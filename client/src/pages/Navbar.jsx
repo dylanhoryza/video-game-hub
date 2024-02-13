@@ -54,12 +54,14 @@ const Navbar = () => {
         <div className={`hamburger ${isOpen ? 'open' : ''}`}></div>
         <div className={`hamburger ${isOpen ? 'open' : ''}`}></div>
         <div className={`hamburger ${isOpen ? 'open' : ''}`}></div>
+        <div className={`hamburger ${isOpen ? 'open' : ''}`}></div>
       </div>
       {isOpen && (
         <ul className="menu-items" ref={menuRef}>
           <li><Link to="/" onClick={closeMenu}>Home</Link></li>
           <li><Link to="/profile" onClick={closeMenu}>Profile</Link></li>
           <li><Link to="/blog" onClick={closeMenu}>Forum</Link></li>
+          <li><Link to="/news" onClick={closeMenu}>News</Link></li>
           {isLoggedIn && (
             <li><button onClick={handleLogout}>Logout</button></li>
           )}

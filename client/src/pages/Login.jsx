@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { useMutation } from '@apollo/client';
 import { LOGIN_USER } from '../utils/mutations';
@@ -27,8 +26,8 @@ const Login = () => {
       });
 
       Auth.login(data.login.token);
-//redirect to anothe rpage after login
-window.location.assign('/profile');
+      //redirect to another page after login
+      window.location.assign('/profile');
     } catch (error) {
       console.error('Error logging in:', error.message);
     }
@@ -41,34 +40,38 @@ window.location.assign('/profile');
           <h4 className="card-header bg-dark text-light p-2">Login</h4>
           <div className="card-body">
             <form onSubmit={handleFormSubmit}>
-              <input
-                className="form-input"
-                placeholder="Your email"
-                name="email"
-                type="email"
-                value={formState.email}
-                onChange={handleChange}
-              />
-              <input
-                className="form-input"
-                placeholder="Password"
-                name="password"
-                type="password"
-                value={formState.password}
-                onChange={handleChange}
-              />
+              <div className="form-group">
+                <input
+                  className="form-control"
+                  placeholder="Your email"
+                  name="email"
+                  type="email"
+                  value={formState.email}
+                  onChange={handleChange}
+                />
+              </div>
+              <div className="form-group">
+                <input
+                  className="form-control"
+                  placeholder="Password"
+                  name="password"
+                  type="password"
+                  value={formState.password}
+                  onChange={handleChange}
+                />
+              </div>
+              {error && (
+                <div className="my-3 p-3 bg-danger text-white">
+                  {error.message}
+                </div>
+              )}
               <button
-                className="btn btn-block btn-primary"
+                className="btn btn-primary btn-block"
                 type="submit"
               >
                 Submit
               </button>
             </form>
-            {error && (
-              <div className="my-3 p-3 bg-danger text-white">
-                {error.message}
-              </div>
-            )}
           </div>
         </div>
       </div>

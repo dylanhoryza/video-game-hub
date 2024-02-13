@@ -117,3 +117,39 @@ mutation UpdateComment($id: ID!, $content: String!) {
   }
 }
 `
+
+export const REMOVE_FROM_WISHLIST = gql`
+mutation deleteFromWishlist($gameId: ID!) {
+  deleteFromWishlist(gameId: $gameId) {
+    _id
+    username
+    email
+    wishlist {
+      gameId
+      name
+      image
+      platforms
+      rating
+      releaseDate
+    }
+  }
+}
+`
+
+export const REMOVE_FROM_CURRENTLY_PLAYING = gql`
+mutation deleteFromCurrentlyPlaying($gameId: ID!) {
+  deleteFromCurrentlyPlaying(gameId: $gameId) {
+    _id
+    username
+    email
+    currentlyPlaying {
+      gameId
+      name
+      image
+      platforms
+      rating
+      releaseDate
+    }
+  }
+}
+`

@@ -8,7 +8,11 @@ import {
 } from '@fortawesome/free-brands-svg-icons';
 import { Link } from 'react-router-dom';
 import { ADD_TO_WISHLIST } from '../utils/mutations';
-import { ADD_TO_CURRENTLY_PLAYING } from '../utils/mutations';
+import {
+  ADD_TO_CURRENTLY_PLAYING,
+  REMOVE_FROM_CURRENTLY_PLAYING,
+  REMOVE_FROM_WISHLIST,
+} from '../utils/mutations';
 import { useQuery } from '@apollo/client';
 import { QUERY_ME } from '../utils/queries';
 import AuthService from '../utils/auth';
@@ -16,8 +20,8 @@ import './Profile.css';
 
 import { useMutation } from '@apollo/client';
 import Navbar from './Navbar';
-import wishlistIcon from '../assets/gift-solid.svg'
-import currentlyPlayingIcon from '../assets/gamepad-solid.svg'
+import wishlistIcon from '../assets/gift-solid.svg';
+import currentlyPlayingIcon from '../assets/gamepad-solid.svg';
 
 // Profile page function
 const ProfilePage = () => {
@@ -26,14 +30,17 @@ const ProfilePage = () => {
   const [wishlist, setWishlist] = useState([]);
   const [currentlyPlaying, setCurrentlyPlaying] = useState([]);
   const [userId, setUserId] = useState(null);
-  const [userData, setUserData] = useState(null);
-  const { loading, error, data } = useQuery(QUERY_ME);
+  // const [userData, setUserData] = useState(null);
+  console.log(QUERY_ME);
+  const { loading, data } = useQuery(QUERY_ME);
+  console.log(data);
+  const userData = data?.me || {};
 
-  useEffect(() => {
-    if (data && data.me) {
-      setUserData(data.me);
-    }
-  }, [data]);
+  // useEffect(() => {
+  //   if (data && data.me) {
+  //     setUserData(data.me);
+  //   }
+  // }, [data]);
 
   // API call for all games
   useEffect(() => {
@@ -108,7 +115,7 @@ const ProfilePage = () => {
     try {
       // Find the game object using the gameId
       const game = searchResults.find((game) => game.id === gameId);
-      console.log(game.id);
+      console.log(game.name);
       if (!game) {
         throw new Error('Game not found');
       }
@@ -125,7 +132,7 @@ const ProfilePage = () => {
       // Call the addToWishlist mutation with the correct variable name
       const { data } = await addToWishlist({
         variables: {
-          gameData: input, // Use the correct variable name as defined in your GraphQL schema
+          gameData: input,
         },
       });
 
@@ -159,14 +166,43 @@ const ProfilePage = () => {
       // Call the addToWishlist mutation with the correct variable name
       const { data } = await addToCurrentlyPlaying({
         variables: {
-          gameData: input, // Use the correct variable name as defined in your GraphQL schema
+          gameData: input,
         },
       });
 
-      setWishlist([...currentlyPlaying, data.addToCurrentlyPlaying]);
+      setCurrentlyPlaying([...currentlyPlaying, data.addToCurrentlyPlaying]);
       // setWishlist(prevState => [...prevState, data.addToWishlist]);
     } catch (error) {
       console.error('Error adding to currently playing:', error);
+    }
+  };
+
+  // Function to handle removing a game from the wishlist
+  const [removeFromWishlist] = useMutation(REMOVE_FROM_WISHLIST);
+  const handleRemoveFromWishlist = async (gameId) => {
+    try {
+      const { data } = await removeFromWishlist({
+        variables: { gameId },
+      });
+      setWishlist(data.deleteFromWishlist.wishlist);
+    } catch (error) {
+      console.error('Error removing from wishlist:', error);
+    }
+  };
+
+  // Function to handle removing a game from currently playing list
+  const [removeFromCurrentlyPlaying] = useMutation(
+    REMOVE_FROM_CURRENTLY_PLAYING
+  );
+  const handleRemoveFromCurrentlyPlaying = async (gameId) => {
+    try {
+      const { data } = await removeFromCurrentlyPlaying({
+        variables: { gameId },
+      });
+      //  setCurrentlyPlaying(data.deleteFromCurrentlyPlaying.currentlyPlaying);
+      removeFromCurrentlyPlaying(gameId);
+    } catch (error) {
+      console.error('Error removing from currently playing:', error);
     }
   };
 
@@ -174,42 +210,64 @@ const ProfilePage = () => {
     <div className='container'>
       <Navbar />
       <header className='my-4'>
-        <h1>Welcome, {}!</h1>
+        <h1 className='username-title'>Welcome, {userData.username}!</h1>
       </header>
 
       <div className='row'>
-        <div className='col-md-4'>
-          {/* Profile Pic */}
-          <img
-            src='https://via.placeholder.com/150' // Replace with the actual URL of the profile picture
-            alt='Profile'
-            className='img-fluid rounded-circle mb-3'
-          />
-        </div>
-        <div className='col-md-8'>
-          <h2>Currently Playing:</h2>
+        <div className='my-4'>
+          <h2 className='currently-playing-title'>
+          Currently Playing
+            <span className='icon'>
+              <img className='icon-image' src={currentlyPlayingIcon} alt='Icon' />
+            </span>
+            
+          </h2>
+
           <div className='container'>
             <div className='row'>
-              {currentlyPlaying.map((game) => (
-                <div className='col-lg-3 col-md-6 col-sm-12' key={game.id}>
+              {userData.currentlyPlaying?.map((game) => (
+                <div className='col-lg-5 col-md-8 col-sm-12' key={game.gameId}>
                   <div className='item'>
-                    <img
-                      src={game.background_image}
-                      alt={game.name}
-                      style={{ width: '100%', height: 'auto' }}
-                    />
-                    <h3>{game.name}</h3>
-                    <p>{getPlatformIcons(game.parent_platforms)}</p>
-                    <p> Rating: {game.rating}</p>
-                    <p>Released: {game.released}</p>
-                    <button onClick={() => handleAddToWishlist(game.id)}>
-                      Add to Wishlist
-                    </button>
-                    <button
-                      onClick={() => handleAddToCurrentlyPlaying(game.id)}
-                    >
-                      Currently Playing
-                    </button>
+                    <div className='image-container'>
+                      <img
+                        className='game-image'
+                        src={game.image}
+                        alt={game.name}
+                        style={{ width: '100%', height: 'auto' }}
+                      />
+                      <div className='overlay'>
+                        <h3 className='game-name'>{game.name}</h3>
+                        <p className='platforms'>
+                          {getPlatformIcons(game.platform)}
+                        </p>
+                        <div className='rating-container'>
+                          <p className='rating-label'>Rating:</p>
+                          <p className='rating'>⭐️{game.rating}</p>
+                        </div>
+                        <div className='released-container'>
+                          <p className='released-label'>Released:</p>
+                          <p className='released'>{game.releaseDate}</p>
+                        </div>
+                        <div className='button-container'>
+                          <img
+                            src={wishlistIcon}
+                            alt='Add to Wishlist'
+                            onClick={() => handleAddToWishlist(game.id)}
+                            className='wishlist-button'
+                            style={{ cursor: 'pointer' }}
+                          />
+                          <img
+                            src={currentlyPlayingIcon}
+                            alt='Currently Playing'
+                            onClick={() =>
+                              handleRemoveFromCurrentlyPlaying(game.game_id)
+                            }
+                            className='currently-playing-button'
+                            style={{ cursor: 'pointer' }}
+                          />
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               ))}
@@ -219,27 +277,56 @@ const ProfilePage = () => {
       </div>
 
       <section className='my-4'>
-        <h2>Wishlist</h2>
+      <h2 className='wishlist-title'>
+           Wishlist
+            <span className='icon'>
+              <img className='icon-image-2' src={wishlistIcon} alt='Icon' />
+            </span>
+            
+          </h2>
         <div className='container'>
           <div className='row'>
-            {wishlist.map((game) => (
-              <div className='col-lg-3 col-md-6 col-sm-12' key={game._id}>
+            {userData.wishlist?.map((game) => (
+              <div className='col-lg-5 col-md-8 col-sm-12' key={game._id}>
                 <div className='item'>
-                  <img
-                    src={game.image}
-                    alt={game.name}
-                    style={{ width: '100%', height: 'auto' }}
-                  />
-                  <h3>{game.name}</h3>
-                  <p>{getPlatformIcons(game.platforms)}</p>
-                  <p> Rating: {game.rating}</p>
-                  <p>Released: {game.releaseDate}</p>
-                  <button onClick={() => handleAddToWishlist()}>
-                    Add to Wishlist
-                  </button>
-                  <button onClick={() => handleAddToCurrentlyPlaying()}>
-                    Currently Playing
-                  </button>
+                  <div className='image-container'>
+                    <img
+                      className='game-image'
+                      src={game.image}
+                      alt={game.name}
+                      style={{ width: '100%', height: 'auto' }}
+                    />
+                    <div className='overlay'>
+                      <h3 className='game-name'>{game.name}</h3>
+                      <p className='platforms'>
+                        {getPlatformIcons(game.platform)}
+                      </p>
+                      <div className='rating-container'>
+                        <p className='rating-label'>Rating:</p>
+                        <p className='rating'>⭐️{game.rating}</p>
+                      </div>
+                      <div className='released-container'>
+                        <p className='released-label'>Released:</p>
+                        <p className='released'>{game.releaseDate}</p>
+                      </div>
+                      <div className='button-container'>
+                        <img
+                          src={wishlistIcon}
+                          alt='Add to Wishlist'
+                          onClick={() => handleRemoveFromWishlist(game.id)}
+                          className='wishlist-button'
+                          style={{ cursor: 'pointer' }}
+                        />
+                        <img
+                          src={currentlyPlayingIcon}
+                          alt='Currently Playing'
+                          onClick={() => handleAddToCurrentlyPlaying(game.id)}
+                          className='currently-playing-button'
+                          style={{ cursor: 'pointer' }}
+                        />
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             ))}
@@ -248,65 +335,65 @@ const ProfilePage = () => {
       </section>
       {/* Search Bar */}
       <div className='input-group mb-3 search-group'>
-        <input className='search-bar'
+        <input
+          className='search-bar'
           type='text'
           placeholder='Search for games...'
           value={searchGames}
           onChange={(e) => setSearchedGames(e.target.value)}
         />
-        <button className='search-button' onClick={handleGameSearch}>Search</button>
+        <button className='search-button' onClick={handleGameSearch}>
+          Search
+        </button>
       </div>
       <div className='container'>
-  <div className='row'>
-    {searchResults.map((game) => (
-      <div className='col-lg-3 col-md-6 col-sm-12' key={game.id}>
-        <div className='item'>
-          <div className="image-container">
-            <img
-              className='game-image'
-              src={game.background_image}
-              alt={game.name}
-              style={{ width: '100%', height: 'auto' }}
-            />
-            <div className="overlay">
-              <h3 className='game-name'>{game.name}</h3>
-              <p className='platforms'>
-                {getPlatformIcons(game.parent_platforms)}
-              </p>
-              <div className='rating-container'>
-                <p className='rating-label'>Rating:</p>
-                <p className='rating'>⭐️{game.rating}</p>
+        <div className='row'>
+          {searchResults.map((game) => (
+            <div className='col-lg-5 col-md-6 col-sm-12' key={game.id}>
+              <div className='item'>
+                <div className='image-container'>
+                  <img
+                    className='game-image'
+                    src={game.background_image}
+                    alt={game.name}
+                    style={{ width: '100%', height: 'auto' }}
+                  />
+                  <div className='overlay'>
+                    <h3 className='game-name'>{game.name}</h3>
+                    <p className='platforms'>
+                      {getPlatformIcons(game.parent_platforms)}
+                    </p>
+                    <div className='rating-container'>
+                      <p className='rating-label'>Rating:</p>
+                      <p className='rating'>⭐️{game.rating}</p>
+                    </div>
+                    <div className='released-container'>
+                      <p className='released-label'>Released:</p>
+                      <p className='released'>{game.released}</p>
+                    </div>
+                    <div className='button-container'>
+                      <img
+                        src={wishlistIcon}
+                        alt='Add to Wishlist'
+                        onClick={() => handleAddToWishlist(game.id)}
+                        className='wishlist-button'
+                        style={{ cursor: 'pointer' }}
+                      />
+                      <img
+                        src={currentlyPlayingIcon}
+                        alt='Currently Playing'
+                        onClick={() => handleAddToCurrentlyPlaying(game.id)}
+                        className='currently-playing-button'
+                        style={{ cursor: 'pointer' }}
+                      />
+                    </div>
+                  </div>
+                </div>
               </div>
-              <div className='released-container'>
-                <p className='released-label'>Released:</p>
-                <p className='released'>{game.released}</p>
-              </div>
-              <div className='button-container'>
-            <img
-              src={wishlistIcon}
-              alt='Add to Wishlist'
-              onClick={() => handleAddToWishlist(game.id)}
-              className='wishlist-button'
-              style={{ cursor: 'pointer' }}
-            />
-            <img
-              src={currentlyPlayingIcon}
-              alt='Currently Playing'
-              onClick={() => handleAddToCurrentlyPlaying(game.id)}
-              className='currently-playing-button'
-              style={{ cursor: 'pointer' }}
-            />
-          </div>
             </div>
-          
-          </div>
-        
+          ))}
         </div>
       </div>
-    ))}
-  </div>
-</div>
-
     </div>
   );
 };

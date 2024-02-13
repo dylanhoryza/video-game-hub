@@ -29,7 +29,8 @@ const SignUp = ({ onClose }) => {
 
       Auth.login(data.addUser.token);
 
-      // After successful sign up, close modal
+      // After successful sign up, close modal and redirect to profile page
+      window.location.assign('/profile');
       onClose();
     } catch (error) {
       console.error('Error signing up:', error.message);

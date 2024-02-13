@@ -174,6 +174,28 @@ const resolvers = {
       throw AuthenticationError;
 
     },
+    deleteFromWishlist: async (_, { gameId }, context) => {
+     if (context.user) {
+      const updatedUser = await User.findByIdAndUpdate(
+        { _id: context.user._id },
+        { $pull: { wishlist: { gameId } } },
+        { new: true }
+      );
+      return updatedUser;
+     }
+     throw AuthenticationError;
+    },
+    deleteFromCurrentlyPlaying: async (_, { gameId }, context) => {
+      if (context.user) {
+        const updatedUser = await User.findByIdAndUpdate(
+          { _id: context.user._id },
+          { $pull: { wishlist: { gameId } } },
+          { new: true }
+        );
+        return updatedUser;
+       }
+       throw AuthenticationError;
+    },
   },
   Comment: {
     author: async (comment) => {
