@@ -5,12 +5,13 @@ import { GET_COMMENTS } from '../utils/queries';
 import Button from '@mui/material/Button';
 
 // comment form for comments 
-const CommentForm = ({ postId }) => {
+const CommentForm = ({ postId, onCommentAdded }) => {
     const [text, setText] = useState('');
 
     const [addComment, { loading, error }] = useMutation(CREATE_COMMENT, {
         onCompleted: () => {
             setText('');
+            onCommentAdded();
         },
         onError: (error) => {
             console.error('Error adding comment:', error);
