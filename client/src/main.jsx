@@ -7,7 +7,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
 import HomePage from './pages/HomePage.jsx';
-import ProfilePage from './pages/ProfilePage.jsx';
+import ProfilePage from './pages/profilePage.jsx';
 import BlogPage from './pages/BlogPage.jsx'; // list path here 
 import CreatePostPage from './pages/CreatePostPage.jsx';
 import UserPostsPage from './pages/UserPosts.jsx';
@@ -40,7 +40,7 @@ const router = createBrowserRouter([
         element: <UserPostsPage />
       },
       {
-        path: '/solo-thread',
+        path: '/solo-thread/:postId',
         element: <SoloThread />
       }
     ]

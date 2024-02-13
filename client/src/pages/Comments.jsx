@@ -15,12 +15,12 @@ const Comments = ({ postId }) => {
     }
 
     // Assuming the query is named 'comments' in your typeDefs
-    // const comments = data?.comments;
+    const comments = data?.comments;
 
     return (
         <div>
             <h4>Comments</h4>
-            {data.comments.map(comment => (
+            {comments.map(comment => (
                 <div key={comment.id}>
                     <p>Content: {comment.content}</p>
                     <p>By: {comment.author.username}</p>
