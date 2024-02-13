@@ -114,6 +114,5 @@ query GetComments($postId: ID!) {
       title
     }
   }
-
 }
 `;
