@@ -1,6 +1,6 @@
 
 
-/* Style for the sign-up button */
+
 .signup-button {
     position: absolute;
     top: 20px; 
@@ -8,3 +8,8 @@
     z-index: 1000; 
   }
   
+  .col-lg-10{
+    display: flex;
+    justify-content: center;
+  
+  }
