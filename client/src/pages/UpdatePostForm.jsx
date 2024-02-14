@@ -16,10 +16,10 @@ const UpdatePostForm = ({ post, updatePost }) => {
     <form onSubmit={handleSubmit}>
       <label>
         Content:
-        <textarea value={content} onChange={handleContentChange} />
+        <textarea className='comment-text-area' value={content} onChange={handleContentChange} />
       </label>
       <br />
-      <button type="submit">Update Post</button>
+      <button className='update-btn' type="submit">Update Post</button>
     </form>
   );
 };

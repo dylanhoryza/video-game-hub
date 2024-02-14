@@ -86,7 +86,7 @@
 
 .search-group {
 display: flex;
-justify-content: center; /* Center items horizontally */
+justify-content: center; 
 margin-bottom: 20px;
 margin-top: 50px;
 align-items: center;
@@ -101,24 +101,24 @@ align-items: center;
 }
 
 .search-button {
-  border: none; /* Remove border */
+  border: none; 
   border-radius: 10px;
   height: 35px;
   width: 80px;
   background-color: rgb(167, 156, 184);
   color: white;
-  cursor: pointer; /* Add pointer cursor */
-  margin-left: 10px; /* Add some space between input and button */
+  cursor: pointer; 
+  margin-left: 10px; 
 }
 
 .search-button:hover,
 .search-button:focus {
-  background-color: #cc00cc; /* Change background color on hover/focus */
+  background-color: #cc00cc; 
 }
 
 .currently-playing-title, .wishlist-title {
  background-color: #04E8AD;
- box-shadow: 0 0 10px #13b587; /* Neon pink box shadow */
+ box-shadow: 0 0 10px #13b587;
   animation: neonBorder 1.5s ease-in-out infinite alternate;
  border-radius: 10px;
  color: black;
@@ -149,7 +149,7 @@ align-items: center;
 }
 
 .username-title {
-  box-shadow: 0 0 10px #13b587; /* Neon pink box shadow */
+  box-shadow: 0 0 10px #13b587; 
   animation: neonBorder 1.5s ease-in-out infinite alternate;
   width: 340px;
   border-radius: 10px;

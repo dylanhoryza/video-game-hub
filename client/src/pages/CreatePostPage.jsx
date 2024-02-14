@@ -43,7 +43,7 @@ const CreatePostPage = ({ refetchPosts }) => {
     return (
         <div>
             <Navbar />
-            <div style={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center', height: '25vh' }}>
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '25vh' }}>
                 <Button
                     component={Link}
                     to='/blog'
@@ -54,10 +54,12 @@ const CreatePostPage = ({ refetchPosts }) => {
                     Back to Forums
                 </Button>
             </div>
+            <div className='forum-card-container'>
+            <div className='post'>
             <h2>Create a New Post</h2>
             <form onSubmit={handleAddPost}>
                 <label htmlFor='title'>Title:</label>
-                <input
+                <input className='comment-text-area'
                     type='text'
                     id='title'
                     name='title'
@@ -67,7 +69,7 @@ const CreatePostPage = ({ refetchPosts }) => {
                 />
                 <br />
                 <label htmlFor='content'>Content:</label>
-                <textarea
+                <textarea className='comment-text-area'
                     id='content'
                     name='content'
                     value={newPost.content}
@@ -78,6 +80,11 @@ const CreatePostPage = ({ refetchPosts }) => {
 
                 <Button className='btn btn-primary' type='submit' variant="contained" color="primary">Add Post</Button>
             </form>
+
+            </div>
+            </div>
+            
+           
         </div>
     );
 };
