@@ -6,8 +6,8 @@
     z-index: 1000; /*navbar is above other content */
   }
   
-  .menu-toggle {
-    cursor: pointer;
+.background-nav-container {
+    width: 65px;
   }
   
   .hamburger {
