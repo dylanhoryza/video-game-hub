@@ -73,6 +73,7 @@ type Game {
     author: User!
     post: Post!
     createdAt: String!
+    updatedAt: String
   }
 
 
@@ -85,7 +86,7 @@ type Game {
     deletePost(postId: ID!): Post
     updatePost(postId: ID!, content: String!): Post!
     createComment(content: String!, post: ID!): Comment!
-    updateComment(content: String!, post: ID!): Comment!
+    updateComment(id: ID!, content: String!): Comment!
     deleteComment(id: ID!): ID!
     deleteFromWishlist(gameId: ID!): User
     deleteFromCurrentlyPlaying(gameId: ID!): User

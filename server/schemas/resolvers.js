@@ -128,19 +128,19 @@ const resolvers = {
       try {
         const updatedComment = await Comment.findByIdAndUpdate(
           id,
-          { content, updatedAt: new Date() },
+          { content, updatedAt: new Date().toISOString() },
           { new: true }
         );
-
+    
         if (!updatedComment) {
           throw new Error('Comment not found');
         }
-
+    
         return updatedComment;
       } catch (error) {
         throw new Error('Failed to update comment');
       }
-    },
+    },    
     deleteComment: async (_, { id }, context) => {
       try {
         await Comment.findByIdAndDelete(id);

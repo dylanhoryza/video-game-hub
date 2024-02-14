@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useQuery, useMutation } from '@apollo/client';
 import { GET_COMMENTS } from '../utils/queries';
-import { DELETE_COMMENT } from '../utils/mutations'; 
+import { DELETE_COMMENT, UPDATE_COMMENT } from '../utils/mutations'; 
 import Button from '@mui/material/Button';
+import UpdateCommentForm from './UpdateCommentForm'; 
 
 const Comments = ({ postId }) => {
     const { loading, error, data, refetch } = useQuery(GET_COMMENTS, {
@@ -10,6 +11,9 @@ const Comments = ({ postId }) => {
     });
 
     const [deleteCommentMutation] = useMutation(DELETE_COMMENT);
+    const [updateCommentMutation] = useMutation(UPDATE_COMMENT);
+
+    const [editingCommentId, setEditingCommentId] = useState(null); 
 
     if (loading) {
         return <p>Loading comments...</p>;
@@ -32,7 +36,25 @@ const Comments = ({ postId }) => {
     };
 
     const handleUpdateComment = (commentId) => {
-        console.log("Update comment with id:", commentId);
+        console.log("Update comment clicked for comment ID:", commentId);
+        setEditingCommentId(commentId); 
+    };
+
+    const handleCancelEdit = () => {
+        setEditingCommentId(null); 
+    };
+
+    const handleSaveEdit = async (commentId, content) => {
+        try {
+            const result = await updateCommentMutation({
+                variables: { id: commentId, content },
+            });
+            console.log("Update result:", result);
+            setEditingCommentId(null); 
+            refetch(); 
+        } catch (error) {
+            console.error('Error updating comment:', error);
+        }
     };
 
     return (
@@ -40,11 +62,21 @@ const Comments = ({ postId }) => {
             <h4>Comments</h4>
             {comments.map(comment => (
                 <div key={comment.id}>
-                    <p>Content: {comment.content}</p>
-                    <p>By: {comment.author.username}</p>
-                    <p>Created At: {comment.updatedAt ? `Updated At: ${new Date(parseInt(comment.updatedAt)).toLocaleDateString()}` : `Created At: ${new Date(parseInt(comment.createdAt)).toLocaleDateString()}`}</p>
-                    <Button onClick={() => handleUpdateComment(comment.id)} variant="contained" color="primary">Update</Button>
-                    <Button onClick={() => handleDeleteComment(comment.id)} variant="contained" color="secondary">Delete</Button>
+                    {editingCommentId === comment.id ? (
+                        <UpdateCommentForm
+                            comment={comment}
+                            onSave={handleSaveEdit}
+                            onCancel={handleCancelEdit}
+                        />
+                    ) : (
+                        <>
+                            <p>Content: {comment.content}</p>
+                            <p>By: {comment.author.username}</p>
+                            <p>Created At: {comment.updatedAt ? `Updated At: ${new Date(parseInt(comment.updatedAt)).toLocaleDateString()}` : `Created At: ${new Date(parseInt(comment.createdAt)).toLocaleDateString()}`}</p>
+                            <Button onClick={() => handleUpdateComment(comment.id)} variant="contained" color="primary">Update</Button>
+                            <Button onClick={() => handleDeleteComment(comment.id)} variant="contained" color="secondary">Delete</Button>
+                        </>
+                    )}
                 </div>
             ))}
         </div>
