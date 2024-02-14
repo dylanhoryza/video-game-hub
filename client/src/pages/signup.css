@@ -13,3 +13,8 @@
     justify-content: center;
   
   }
+
+  .flex-row, .justify-center, .mb-4{
+    justify-content: center;
+    display: flex;
+  }
