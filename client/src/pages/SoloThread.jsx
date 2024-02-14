@@ -5,7 +5,6 @@ import { GET_POST_BY_ID } from '../utils/queries';
 import Button from '@mui/material/Button';
 import Comments from './Comments';
 import CommentForm from './CommentForm';
-import UpdateCommentForm from './UpdateCommentForm';
 
 const SinglePostPage = () => {
     const { postId } = useParams();
