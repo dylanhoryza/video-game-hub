@@ -190,19 +190,38 @@ const ProfilePage = () => {
     }
   };
 
-  // Function to handle removing a game from currently playing list
   const [removeFromCurrentlyPlaying] = useMutation(
     REMOVE_FROM_CURRENTLY_PLAYING
   );
   const handleRemoveFromCurrentlyPlaying = async (gameId) => {
     try {
+      // Find the game object using the gameId
+      const game = userData.find((game) => game.id === gameId);
+      console.log(game.id);
+      if (!game) {
+        throw new Error('Game not found');
+      }
+
+      const input = {
+        gameId: game.id.toString(), // Convert gameId to a string
+        name: game.name,
+        image: game.background_image,
+        platforms: game.platforms.map((platform) => platform.name),
+        rating: game.rating,
+        releaseDate: game.released,
+      };
+
+      // Call the addToWishlist mutation with the correct variable name
       const { data } = await removeFromCurrentlyPlaying({
-        variables: { gameId },
+        variables: {
+          gameData: input,
+        },
       });
-      //  setCurrentlyPlaying(data.deleteFromCurrentlyPlaying.currentlyPlaying);
-      removeFromCurrentlyPlaying(gameId);
+
+      removeFromCurrentlyPlaying([...currentlyPlaying, data.removeFromCurrentlyPlaying]);
+      // setWishlist(prevState => [...prevState, data.addToWishlist]);
     } catch (error) {
-      console.error('Error removing from currently playing:', error);
+      console.error('Error adding to currently playing:', error);
     }
   };
 
@@ -260,7 +279,7 @@ const ProfilePage = () => {
                             src={currentlyPlayingIcon}
                             alt='Currently Playing'
                             onClick={() =>
-                              handleRemoveFromCurrentlyPlaying(game.game_id)
+                              handleRemoveFromCurrentlyPlaying(game.gameId)
                             }
                             className='currently-playing-button'
                             style={{ cursor: 'pointer' }}
