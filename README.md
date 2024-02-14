@@ -35,6 +35,8 @@ Join us at Video Game Hub and unlock a world of limitless possibilities, where y
 
 ## Usage
 
+![VGH](https://github.com/dylanhoryza/video-game-hub/assets/78831747/73f1316d-8bda-4979-b499-aa4cfed6a0ef)
+
 - Open your browser and navigate to [http://localhost:3000](http://localhost:3000) to view the application.
 
 Or please just locate our website at _________________________________
