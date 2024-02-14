@@ -34,10 +34,11 @@ const SinglePostPage = () => {
     return (
         <div className='forum-card-container'>
             <div className='post'>
-                <h1 className='post-title'>{post.title}</h1>
+                <h2 className='post-title'>{post.title}</h2>
+                <p className='author'>Posted by: {post.author.username}</p>
+                <p className='created-at'> {new Date(parseInt(post.createdAt)).toLocaleDateString()}</p>
                 <p className='post-content'>{post.content}</p>
-                <p className='author'>Author: {post.author.username}</p>
-                <p className='created-at'>Created At: {new Date(parseInt(post.createdAt)).toLocaleDateString()}</p>
+                
                 <Button onClick={handleCommentClick} variant="contained" color="primary">Comment</Button>
                 {showCommentForm && <CommentForm postId={postId} onCommentAdded={handleCommentAdded} />} {/* Render the comment form only if showCommentForm is true */}
                 <Comments postId={postId} />

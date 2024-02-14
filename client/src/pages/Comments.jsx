@@ -69,7 +69,7 @@ const Comments = ({ postId }) => {
 
     return (
         <div>
-            <h4>Comments</h4>
+            <h3 className='comments-title'>Comments</h3>
             {comments.map(comment => (
                 <div key={comment.id}>
                     {/* ... */}
@@ -81,9 +81,9 @@ const Comments = ({ postId }) => {
                         />
                     ) : (
                         <>
-                            <p>Content: {comment.content}</p>
-                            <p>By: {comment.author.username}</p>
-                            <p>Created At: {comment.updatedAt ? `Updated At: ${new Date(parseInt(comment.updatedAt)).toLocaleDateString()}` : `Created At: ${new Date(parseInt(comment.createdAt)).toLocaleDateString()}`}</p>
+                            <p className='post-content'>{comment.content}</p>
+                            <p className="author">Comment By: {comment.author.username}</p>
+                            <p className="created-at">{comment.updatedAt ? `Updated At: ${new Date(parseInt(comment.updatedAt)).toLocaleDateString()}` : `${new Date(parseInt(comment.createdAt)).toLocaleDateString()}`}</p>
                             {currentUserId === comment.author._id && (
                                 <>
                                     <Button onClick={() => handleUpdateComment(comment.id)} variant="contained" color="primary">Update</Button>
