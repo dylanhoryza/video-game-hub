@@ -161,7 +161,7 @@ const HomePage = () => {
       <div className='container'>
   <div className='row'>
     {searchResults.map((game) => (
-      <div className='col-lg-3 col-md-6 col-sm-12' key={game.id}>
+      <div className='col-lg-5 col-md-6 col-sm-12' key={game.id}>
         <div className='item'>
           <div className="image-container">
             <img
